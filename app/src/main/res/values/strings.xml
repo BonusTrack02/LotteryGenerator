@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">LotteryGenerator</string>
+    <string name="app_name">로또 번호 생성기</string>
+    <string name="app_icon">앱 아이콘</string>
 </resources>
