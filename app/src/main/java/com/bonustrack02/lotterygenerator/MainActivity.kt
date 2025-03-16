@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryBlue
@@ -108,7 +109,7 @@ fun RandomNumberBallsWithButton(modifier: Modifier) {
             onClick = { numbers = generateRandomNumbers() },
             modifier = Modifier.padding(top = 16.dp)
         ) {
-            Text("새로운 번호 생성")
+            Text(stringResource(R.string.generate_new_number_set))
         }
     }
 }
