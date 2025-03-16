@@ -60,7 +60,7 @@ class SplashActivity : ComponentActivity() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val painter = painterResource(R.drawable.money_bag_24dp_fill0_wght400_grad0_opsz24)
+            val painter = painterResource(R.mipmap.icon_app_foreground)
             Image(
                 modifier = Modifier
                     .width(180.dp)
