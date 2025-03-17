@@ -20,16 +20,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryBlue
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryGeneratorTheme
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryGray
@@ -47,20 +45,17 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
                     Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                        ,
+                        modifier = Modifier.fillMaxHeight(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .wrapContentHeight()
-                            ,
+                                .wrapContentHeight(),
                             horizontalArrangement = Arrangement.Center,
                         ) {
-                            RandomNumberBallsWithButton(Modifier.padding(innerPadding))
+                            LotteryBallScreen(Modifier.padding(innerPadding))
                         }
                     }
                 }
@@ -68,10 +63,25 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-@Composable
-fun RandomNumberBallsWithButton(modifier: Modifier) {
-    var numbers by remember { mutableStateOf(generateRandomNumbers()) }
 
+@Composable
+fun LotteryBallScreen(modifier: Modifier) {
+    val viewModel: MainViewModel = viewModel()
+    val numbers = viewModel.lotteryNumbers.collectAsState().value
+
+    RandomNumberBallsWithButton(
+        numbers = numbers,
+        onGenerateClick = { viewModel.generateNewNumbers() },
+        modifier = modifier
+    )
+}
+
+@Composable
+fun RandomNumberBallsWithButton(
+    numbers: List<Int>,
+    onGenerateClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth().padding(16.dp)
@@ -106,14 +116,10 @@ fun RandomNumberBallsWithButton(modifier: Modifier) {
         }
 
         Button(
-            onClick = { numbers = generateRandomNumbers() },
+            onClick = onGenerateClick,
             modifier = Modifier.padding(top = 16.dp)
         ) {
             Text(stringResource(R.string.generate_new_number_set))
         }
     }
-}
-
-private fun generateRandomNumbers(): List<Int> {
-    return (1..45).shuffled().take(6).sorted()
 }
