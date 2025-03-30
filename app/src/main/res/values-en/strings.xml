@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LotteryGenerator</string>
+    <string name="app_icon">App Icon</string>
+    <string name="generate_new_number_set">Generate a new number set</string>
+</resources>
