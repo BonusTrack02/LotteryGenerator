@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class MainViewModel : ViewModel() {
-    private val _lotteryNumbers = MutableStateFlow(generateRandomNumbers())
+    private val _lotteryNumbers = MutableStateFlow<List<Int>>(emptyList())
     val lotteryNumbers: StateFlow<List<Int>> = _lotteryNumbers.asStateFlow()
 
     fun generateNewNumbers() {

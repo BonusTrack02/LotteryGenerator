@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -84,32 +85,49 @@ fun RandomNumberBallsWithButton(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth().padding(16.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .height(40.dp)
         ) {
-            numbers.forEach { number ->
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(
-                            color = when (number) {
-                                in 1..10 -> LotteryYellow
-                                in 11..20 -> LotteryBlue
-                                in 21..30 -> LotteryRed
-                                in 31..40 -> LotteryGray
-                                else -> LotteryGreen
-                            },
-                            shape = CircleShape
+            if (numbers.isNotEmpty()) {
+                numbers.forEach { number ->
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(
+                                color = when (number) {
+                                    in 1..10 -> LotteryYellow
+                                    in 11..20 -> LotteryBlue
+                                    in 21..30 -> LotteryRed
+                                    in 31..40 -> LotteryGray
+                                    else -> LotteryGreen
+                                },
+                                shape = CircleShape
+                            )
+                    ) {
+                        Text(
+                            text = number.toString(),
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
                         )
-                ) {
-                    Text(
-                        text = number.toString(),
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
+                    }
+                }
+            } else {
+                repeat(6) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(
+                                color = Color.LightGray.copy(alpha = 0.3f),
+                                shape = CircleShape
+                            )
                     )
                 }
             }
