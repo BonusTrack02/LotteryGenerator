@@ -3,4 +3,7 @@
     <string name="app_name">LotteryGenerator</string>
     <string name="app_icon">App Icon</string>
     <string name="generate_new_number_set">Generate a new number set</string>
+    <string name="bottom_nav_home">Home</string>
+    <string name="bottom_nav_history">History</string>
+    <string name="bottom_nav_settings">Settings</string>
 </resources>
