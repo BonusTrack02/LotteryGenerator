@@ -5,23 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,12 +16,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.bonustrack02.lotterygenerator.ui.theme.LotteryBlue
-import com.bonustrack02.lotterygenerator.ui.theme.LotteryGeneratorTheme
-import com.bonustrack02.lotterygenerator.ui.theme.LotteryGray
-import com.bonustrack02.lotterygenerator.ui.theme.LotteryGreen
-import com.bonustrack02.lotterygenerator.ui.theme.LotteryRed
-import com.bonustrack02.lotterygenerator.ui.theme.LotteryYellow
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.bonustrack02.lotterygenerator.presentation.navigation.BottomNavItem
+import com.bonustrack02.lotterygenerator.presentation.navigation.bottomNavItems
+import com.bonustrack02.lotterygenerator.ui.theme.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,22 +30,41 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LotteryGeneratorTheme {
+                val navController = rememberNavController()
                 Scaffold(
-                    modifier = Modifier.fillMaxSize()
-                ) { innerPadding ->
-                    Column(
-                        modifier = Modifier.fillMaxHeight(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight(),
-                            horizontalArrangement = Arrangement.Center,
-                        ) {
-                            LotteryBallScreen(Modifier.padding(innerPadding))
+                    modifier = Modifier.fillMaxSize(),
+                    bottomBar = {
+                        NavigationBar {
+                            val navBackStackEntry = navController.currentBackStackEntryAsState().value
+                            val currentRoute = navBackStackEntry?.destination?.route
+                            bottomNavItems.forEach { item ->
+                                NavigationBarItem(
+                                    selected = currentRoute == item.route,
+                                    onClick = {
+                                        if (currentRoute != item.route) {
+                                            navController.navigate(item.route) {
+                                                // 스택 쌓임 및 중복 방지
+                                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                                launchSingleTop = true
+                                                restoreState = true
+                                            }
+                                        }
+                                    },
+                                    icon = { /* 아이콘 추가 가능 */ },
+                                    label = { Text(stringResource(item.label)) }
+                                )
+                            }
                         }
+                    }
+                ) { innerPadding ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = BottomNavItem.Main.route,
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        composable(BottomNavItem.Main.route) { LotteryBallScreen(Modifier) }
+                        composable(BottomNavItem.History.route) { HistoryScreen() }
+                        composable(BottomNavItem.Settings.route) { SettingsScreen() }
                     }
                 }
             }
@@ -66,15 +73,27 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun LotteryBallScreen(modifier: Modifier) {
+fun LotteryBallScreen(modifier: Modifier = Modifier) {
     val viewModel: MainViewModel = viewModel()
     val numbers = viewModel.lotteryNumbers.collectAsState().value
 
-    RandomNumberBallsWithButton(
-        numbers = numbers,
-        onGenerateClick = { viewModel.generateNewNumbers() },
-        modifier = modifier
-    )
+    Column(
+        modifier = modifier.fillMaxHeight(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            RandomNumberBallsWithButton(
+                numbers = numbers,
+                onGenerateClick = { viewModel.generateNewNumbers() }
+            )
+        }
+    }
 }
 
 @Composable
@@ -141,3 +160,9 @@ fun RandomNumberBallsWithButton(
         }
     }
 }
+
+@Composable
+fun HistoryScreen() { }
+
+@Composable
+fun SettingsScreen() { }
