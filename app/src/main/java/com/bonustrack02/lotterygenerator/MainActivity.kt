@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -50,7 +51,12 @@ class MainActivity : ComponentActivity() {
                                             }
                                         }
                                     },
-                                    icon = { /* 아이콘 추가 가능 */ },
+                                    icon = {
+                                        Icon(
+                                            painter = painterResource(item.icon),
+                                            contentDescription = stringResource(item.label)
+                                        )
+                                    },
                                     label = { Text(stringResource(item.label)) }
                                 )
                             }
@@ -59,10 +65,10 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = BottomNavItem.Main.route,
+                        startDestination = BottomNavItem.Home.route,
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable(BottomNavItem.Main.route) { LotteryBallScreen(Modifier) }
+                        composable(BottomNavItem.Home.route) { LotteryBallScreen(Modifier) }
                         composable(BottomNavItem.History.route) { HistoryScreen() }
                         composable(BottomNavItem.Settings.route) { SettingsScreen() }
                     }

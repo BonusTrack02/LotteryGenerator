@@ -2,7 +2,7 @@
     <string name="app_name">로또 번호 생성기</string>
     <string name="app_icon">앱 아이콘</string>
     <string name="generate_new_number_set">새로운 번호 생성</string>
-    <string name="bottom_nav_main">메인</string>
+    <string name="bottom_nav_home">홈</string>
     <string name="bottom_nav_history">기록</string>
     <string name="bottom_nav_settings">설정</string>
 </resources>
