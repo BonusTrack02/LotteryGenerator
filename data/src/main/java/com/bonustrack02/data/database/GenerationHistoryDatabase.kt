@@ -10,7 +10,7 @@ import com.bonustrack02.data.entity.GenerationHistoryEntity
 @Database(
     entities = [GenerationHistoryEntity::class],
     version = 1,
-    exportSchema = false
+    exportSchema = true
 )
 abstract class GenerationHistoryDatabase : RoomDatabase() {
     abstract fun generationHistoryDao(): GenerationHistoryDao
