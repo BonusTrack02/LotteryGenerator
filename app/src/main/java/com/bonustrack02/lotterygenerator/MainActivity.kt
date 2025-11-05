@@ -32,6 +32,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             LotteryGeneratorTheme {
                 val navController = rememberNavController()
+                val viewModel: MainViewModel = viewModel()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -68,8 +69,8 @@ class MainActivity : ComponentActivity() {
                         startDestination = BottomNavItem.Home.route,
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable(BottomNavItem.Home.route) { LotteryBallScreen(Modifier) }
-                        composable(BottomNavItem.History.route) { HistoryScreen() }
+                        composable(BottomNavItem.Home.route) { LotteryBallScreen(viewModel = viewModel) }
+                        composable(BottomNavItem.History.route) { HistoryScreen(viewModel = viewModel) }
                         composable(BottomNavItem.Settings.route) { SettingsScreen() }
                     }
                 }
@@ -79,8 +80,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun LotteryBallScreen(modifier: Modifier = Modifier) {
-    val viewModel: MainViewModel = viewModel()
+fun LotteryBallScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
     val numbers = viewModel.lotteryNumbers.collectAsState().value
 
     Column(
@@ -168,7 +168,7 @@ fun RandomNumberBallsWithButton(
 }
 
 @Composable
-fun HistoryScreen() { }
+fun HistoryScreen(viewModel: MainViewModel) { }
 
 @Composable
 fun SettingsScreen() { }
