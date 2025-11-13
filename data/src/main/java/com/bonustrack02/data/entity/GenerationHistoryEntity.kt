@@ -10,11 +10,11 @@ data class GenerationHistoryEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 
-    @ColumnInfo(name = "date")
-    val date: String,
-
-    @ColumnInfo(name = "time")
-    val time: String,
+    /**
+     * GMT+0 timestamp in seconds
+     * */
+    @ColumnInfo(name = "timestamp")
+    val timestamp: Long,
 
     @ColumnInfo(name = "number1")
     val number1: Int,
