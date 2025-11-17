@@ -21,6 +21,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.bonustrack02.data.database.GenerationHistoryDatabase
+import com.bonustrack02.data.repository.GenerationHistoryRepositoryImpl
+import com.bonustrack02.domain.usecase.GenerateLotteryNumbersUseCase
+import com.bonustrack02.domain.usecase.SaveGenerationHistoryUseCase
 import com.bonustrack02.lotterygenerator.presentation.navigation.BottomNavItem
 import com.bonustrack02.lotterygenerator.presentation.navigation.bottomNavItems
 import com.bonustrack02.lotterygenerator.ui.theme.*
@@ -28,11 +32,18 @@ import com.bonustrack02.lotterygenerator.ui.theme.*
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val database = GenerationHistoryDatabase.getDatabase(this)
+        val repository = GenerationHistoryRepositoryImpl(database.generationHistoryDao())
+        val generateLotteryNumbersUseCase = GenerateLotteryNumbersUseCase()
+        val saveGenerationHistoryUseCase = SaveGenerationHistoryUseCase(repository)
+        val viewModelFactory = MainViewModelFactory(generateLotteryNumbersUseCase, saveGenerationHistoryUseCase)
+
         enableEdgeToEdge()
         setContent {
             LotteryGeneratorTheme {
                 val navController = rememberNavController()
-                val viewModel: MainViewModel = viewModel()
+                val viewModel: MainViewModel = viewModel(factory = viewModelFactory)
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
