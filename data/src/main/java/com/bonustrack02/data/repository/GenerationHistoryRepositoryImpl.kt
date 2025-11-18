@@ -18,4 +18,20 @@ class GenerationHistoryRepositoryImpl(private val dao: GenerationHistoryDao) : G
         )
         dao.insert(entity)
     }
+
+    override suspend fun getAllGenerationHistory(): List<GenerationHistory> {
+        return dao.getAll().map { entity ->
+            GenerationHistory(
+                numbers = listOf(
+                    entity.number1,
+                    entity.number2,
+                    entity.number3,
+                    entity.number4,
+                    entity.number5,
+                    entity.number6
+                ),
+                generationTimestamp = entity.timestamp
+            )
+        }
+    }
 }

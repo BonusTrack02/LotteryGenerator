@@ -2,6 +2,7 @@ package com.bonustrack02.lotterygenerator
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bonustrack02.domain.usecase.FetchGenerationHistoryUseCase
 import com.bonustrack02.domain.usecase.GenerateLotteryNumbersUseCase
 import com.bonustrack02.domain.usecase.SaveGenerationHistoryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +12,8 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val generateLotteryNumbers: GenerateLotteryNumbersUseCase,
-    private val saveGenerationHistory: SaveGenerationHistoryUseCase
+    private val saveGenerationHistory: SaveGenerationHistoryUseCase,
+    private val fetchGenerationHistory: FetchGenerationHistoryUseCase,
 ) : ViewModel() {
     private val _lotteryNumbers = MutableStateFlow<List<Int>>(emptyList())
     val lotteryNumbers: StateFlow<List<Int>> = _lotteryNumbers.asStateFlow()
