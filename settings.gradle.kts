@@ -21,3 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "LotteryGenerator"
 include(":app")
+include(":data")
+include(":domain")
