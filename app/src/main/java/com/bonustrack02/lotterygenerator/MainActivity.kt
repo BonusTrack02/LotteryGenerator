@@ -9,13 +9,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -24,7 +22,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,8 +39,13 @@ import com.bonustrack02.data.repository.GenerationHistoryRepositoryImpl
 import com.bonustrack02.domain.usecase.FetchGenerationHistoryUseCase
 import com.bonustrack02.domain.usecase.GenerateLotteryNumbersUseCase
 import com.bonustrack02.domain.usecase.SaveGenerationHistoryUseCase
+import com.bonustrack02.lotterygenerator.presentation.history.HistoryScreen
+import com.bonustrack02.lotterygenerator.presentation.home.HomeViewModel
+import com.bonustrack02.lotterygenerator.presentation.home.HomeViewModelFactory
+import com.bonustrack02.lotterygenerator.presentation.home.LotteryBallScreen
 import com.bonustrack02.lotterygenerator.presentation.navigation.BottomNavItem
 import com.bonustrack02.lotterygenerator.presentation.navigation.bottomNavItems
+import com.bonustrack02.lotterygenerator.presentation.settings.SettingsScreen
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryBlue
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryGeneratorTheme
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryGray
@@ -59,14 +61,13 @@ class MainActivity : ComponentActivity() {
         val repository = GenerationHistoryRepositoryImpl(database.generationHistoryDao())
         val generateLotteryNumbersUseCase = GenerateLotteryNumbersUseCase()
         val saveGenerationHistoryUseCase = SaveGenerationHistoryUseCase(repository)
-        val fetchGenerationHistoryUseCase = FetchGenerationHistoryUseCase(repository)
-        val viewModelFactory = MainViewModelFactory(generateLotteryNumbersUseCase, saveGenerationHistoryUseCase, fetchGenerationHistoryUseCase)
+        val homeViewModelFactory = HomeViewModelFactory(generateLotteryNumbersUseCase, saveGenerationHistoryUseCase)
 
         enableEdgeToEdge()
         setContent {
             LotteryGeneratorTheme {
                 val navController = rememberNavController()
-                val viewModel: MainViewModel = viewModel(factory = viewModelFactory)
+                val viewModel: HomeViewModel = viewModel(factory = homeViewModelFactory)
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -104,34 +105,11 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable(BottomNavItem.Home.route) { LotteryBallScreen(viewModel = viewModel) }
-                        composable(BottomNavItem.History.route) { HistoryScreen(viewModel = viewModel) }
+                        composable(BottomNavItem.History.route) { HistoryScreen() }
                         composable(BottomNavItem.Settings.route) { SettingsScreen() }
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun LotteryBallScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
-    val numbers = viewModel.lotteryNumbers.collectAsState().value
-
-    Column(
-        modifier = modifier.fillMaxHeight(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            horizontalArrangement = Arrangement.Center,
-        ) {
-            RandomNumberBallsWithButton(
-                numbers = numbers,
-                onGenerateClick = { viewModel.generateNewNumbers() }
-            )
         }
     }
 }
@@ -200,9 +178,3 @@ fun RandomNumberBallsWithButton(
         }
     }
 }
-
-@Composable
-fun HistoryScreen(viewModel: MainViewModel) { }
-
-@Composable
-fun SettingsScreen() { }
