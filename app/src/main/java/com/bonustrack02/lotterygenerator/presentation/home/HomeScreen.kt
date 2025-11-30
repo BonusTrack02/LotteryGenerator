@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.bonustrack02.lotterygenerator.MainViewModel
 import com.bonustrack02.lotterygenerator.RandomNumberBallsWithButton
 
 @Composable
