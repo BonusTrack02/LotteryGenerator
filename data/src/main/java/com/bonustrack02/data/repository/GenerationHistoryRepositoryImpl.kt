@@ -4,8 +4,11 @@ import com.bonustrack02.data.dao.GenerationHistoryDao
 import com.bonustrack02.data.entity.GenerationHistoryEntity
 import com.bonustrack02.domain.model.GenerationHistory
 import com.bonustrack02.domain.repository.GenerationHistoryRepository
+import javax.inject.Inject
 
-class GenerationHistoryRepositoryImpl(private val dao: GenerationHistoryDao) : GenerationHistoryRepository {
+class GenerationHistoryRepositoryImpl @Inject constructor(
+    private val dao: GenerationHistoryDao
+) : GenerationHistoryRepository {
     override suspend fun saveGenerationHistory(history: GenerationHistory) {
         val entity = GenerationHistoryEntity(
             timestamp = history.generationTimestamp,

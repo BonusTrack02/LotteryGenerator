@@ -29,19 +29,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.bonustrack02.data.database.GenerationHistoryDatabase
-import com.bonustrack02.data.repository.GenerationHistoryRepositoryImpl
-import com.bonustrack02.domain.usecase.FetchGenerationHistoryUseCase
-import com.bonustrack02.domain.usecase.GenerateLotteryNumbersUseCase
-import com.bonustrack02.domain.usecase.SaveGenerationHistoryUseCase
 import com.bonustrack02.lotterygenerator.presentation.history.HistoryScreen
 import com.bonustrack02.lotterygenerator.presentation.home.HomeViewModel
-import com.bonustrack02.lotterygenerator.presentation.home.HomeViewModelFactory
 import com.bonustrack02.lotterygenerator.presentation.home.LotteryBallScreen
 import com.bonustrack02.lotterygenerator.presentation.navigation.BottomNavItem
 import com.bonustrack02.lotterygenerator.presentation.navigation.bottomNavItems
@@ -52,22 +46,17 @@ import com.bonustrack02.lotterygenerator.ui.theme.LotteryGray
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryGreen
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryRed
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryYellow
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val database = GenerationHistoryDatabase.getDatabase(this)
-        val repository = GenerationHistoryRepositoryImpl(database.generationHistoryDao())
-        val generateLotteryNumbersUseCase = GenerateLotteryNumbersUseCase()
-        val saveGenerationHistoryUseCase = SaveGenerationHistoryUseCase(repository)
-        val homeViewModelFactory = HomeViewModelFactory(generateLotteryNumbersUseCase, saveGenerationHistoryUseCase)
 
         enableEdgeToEdge()
         setContent {
             LotteryGeneratorTheme {
                 val navController = rememberNavController()
-                val viewModel: HomeViewModel = viewModel(factory = homeViewModelFactory)
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -104,7 +93,10 @@ class MainActivity : ComponentActivity() {
                         startDestination = BottomNavItem.Home.route,
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable(BottomNavItem.Home.route) { LotteryBallScreen(viewModel = viewModel) }
+                        composable(BottomNavItem.Home.route) {
+                            val viewModel: HomeViewModel = hiltViewModel()
+                            LotteryBallScreen(viewModel = viewModel)
+                        }
                         composable(BottomNavItem.History.route) { HistoryScreen() }
                         composable(BottomNavItem.Settings.route) { SettingsScreen() }
                     }
