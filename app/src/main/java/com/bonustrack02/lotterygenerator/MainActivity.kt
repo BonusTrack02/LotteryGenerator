@@ -29,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -52,22 +53,17 @@ import com.bonustrack02.lotterygenerator.ui.theme.LotteryGray
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryGreen
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryRed
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryYellow
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val database = GenerationHistoryDatabase.getDatabase(this)
-        val repository = GenerationHistoryRepositoryImpl(database.generationHistoryDao())
-        val generateLotteryNumbersUseCase = GenerateLotteryNumbersUseCase()
-        val saveGenerationHistoryUseCase = SaveGenerationHistoryUseCase(repository)
-        val homeViewModelFactory = HomeViewModelFactory(generateLotteryNumbersUseCase, saveGenerationHistoryUseCase)
 
         enableEdgeToEdge()
         setContent {
             LotteryGeneratorTheme {
                 val navController = rememberNavController()
-                val viewModel: HomeViewModel = viewModel(factory = homeViewModelFactory)
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -104,7 +100,10 @@ class MainActivity : ComponentActivity() {
                         startDestination = BottomNavItem.Home.route,
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable(BottomNavItem.Home.route) { LotteryBallScreen(viewModel = viewModel) }
+                        composable(BottomNavItem.Home.route) {
+                            val viewModel: HomeViewModel = hiltViewModel()
+                            LotteryBallScreen(viewModel = viewModel)
+                        }
                         composable(BottomNavItem.History.route) { HistoryScreen() }
                         composable(BottomNavItem.Settings.route) { SettingsScreen() }
                     }

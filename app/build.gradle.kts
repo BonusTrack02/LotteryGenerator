@@ -20,6 +20,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    hilt {
+        enableAggregatingTask = false
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -62,6 +66,7 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
