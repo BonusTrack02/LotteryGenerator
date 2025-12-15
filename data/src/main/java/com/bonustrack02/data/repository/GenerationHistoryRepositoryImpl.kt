@@ -2,8 +2,13 @@ package com.bonustrack02.data.repository
 
 import com.bonustrack02.data.dao.GenerationHistoryDao
 import com.bonustrack02.data.entity.GenerationHistoryEntity
+import com.bonustrack02.data.mapper.toModel
 import com.bonustrack02.domain.model.GenerationHistory
 import com.bonustrack02.domain.repository.GenerationHistoryRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GenerationHistoryRepositoryImpl @Inject constructor(
@@ -22,19 +27,11 @@ class GenerationHistoryRepositoryImpl @Inject constructor(
         dao.insert(entity)
     }
 
-    override suspend fun getAllGenerationHistory(): List<GenerationHistory> {
-        return dao.getAll().map { entity ->
-            GenerationHistory(
-                numbers = listOf(
-                    entity.number1,
-                    entity.number2,
-                    entity.number3,
-                    entity.number4,
-                    entity.number5,
-                    entity.number6
-                ),
-                generationTimestamp = entity.timestamp
-            )
-        }
+    override fun getGenerationHistoryStream(): Flow<List<GenerationHistory>> {
+        return dao.getAll().map { entities ->
+            entities.map { entity ->
+                entity.toModel()
+            }
+        }.flowOn(Dispatchers.IO)
     }
 }

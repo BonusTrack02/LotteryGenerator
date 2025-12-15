@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.bonustrack02.data.entity.GenerationHistoryEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GenerationHistoryDao {
@@ -15,5 +16,5 @@ interface GenerationHistoryDao {
     suspend fun delete(generationHistoryEntity: GenerationHistoryEntity)
 
     @Query("SELECT * FROM generationhistoryentity ORDER BY id DESC")
-    suspend fun getAll(): List<GenerationHistoryEntity>
+    fun getAll(): Flow<List<GenerationHistoryEntity>>
 }
