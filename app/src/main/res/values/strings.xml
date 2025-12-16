@@ -2,4 +2,11 @@
     <string name="app_name">로또 번호 생성기</string>
     <string name="app_icon">앱 아이콘</string>
     <string name="generate_new_number_set">새로운 번호 생성</string>
+    <string name="bottom_nav_home">홈</string>
+    <string name="bottom_nav_history">기록</string>
+    <string name="bottom_nav_settings">설정</string>
+    <string name="delete_all_generation_history">모든 기록 삭제</string>
+    <string name="delete_all_generation_history_confirm">저장된 모든 번호 생성 기록이 영구적으로 삭제됩니다. 계속하시겠습니까?</string>
+    <string name="delete">삭제</string>
+    <string name="cancel">취소</string>
 </resources>
