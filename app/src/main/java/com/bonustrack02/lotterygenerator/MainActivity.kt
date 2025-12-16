@@ -16,11 +16,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,6 +53,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -57,12 +61,26 @@ class MainActivity : ComponentActivity() {
         setContent {
             LotteryGeneratorTheme {
                 val navController = rememberNavController()
+                val navBackStackEntry = navController.currentBackStackEntryAsState().value
+                val currentRoute = navBackStackEntry?.destination?.route
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    text = when (currentRoute) {
+                                        BottomNavItem.Home.route -> stringResource(R.string.bottom_nav_home)
+                                        BottomNavItem.History.route -> stringResource(R.string.bottom_nav_history)
+                                        BottomNavItem.Settings.route -> stringResource(R.string.bottom_nav_settings)
+                                        else -> ""
+                                    }
+                                )
+                            }
+                        )
+                    },
                     bottomBar = {
                         NavigationBar {
-                            val navBackStackEntry = navController.currentBackStackEntryAsState().value
-                            val currentRoute = navBackStackEntry?.destination?.route
                             bottomNavItems.forEach { item ->
                                 NavigationBarItem(
                                     selected = currentRoute == item.route,
@@ -70,7 +88,9 @@ class MainActivity : ComponentActivity() {
                                         if (currentRoute != item.route) {
                                             navController.navigate(item.route) {
                                                 // 스택 쌓임 및 중복 방지
-                                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                                popUpTo(navController.graph.startDestinationId) {
+                                                    saveState = true
+                                                }
                                                 launchSingleTop = true
                                                 restoreState = true
                                             }
@@ -103,6 +123,35 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+}
+
+@Composable
+fun LotteryBall(
+    number: Int,
+    modifier: Modifier = Modifier
+) {
+    // 색상 결정 로직
+    val ballColor = when (number) {
+        in 1..10 -> LotteryYellow // 기존에 정의된 색상 사용
+        in 11..20 -> LotteryBlue
+        in 21..30 -> LotteryRed
+        in 31..40 -> LotteryGray
+        else -> LotteryGreen
+    }
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .size(40.dp) // 공 크기
+            .background(color = ballColor, shape = CircleShape)
+    ) {
+        Text(
+            text = number.toString(),
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
 }
 
