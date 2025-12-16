@@ -5,6 +5,7 @@ import com.bonustrack02.domain.model.GenerationHistory
 
 fun GenerationHistoryEntity.toModel(): GenerationHistory {
     return GenerationHistory(
+        id = id,
         numbers = listOf(
             number1,
             number2,
