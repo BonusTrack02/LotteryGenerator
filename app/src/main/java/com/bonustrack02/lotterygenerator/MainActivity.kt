@@ -5,17 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -152,4 +146,18 @@ fun LotteryBall(
             style = MaterialTheme.typography.bodyMedium
         )
     }
+}
+
+@Composable
+fun EmptyLotteryBall(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .size(40.dp) // LotteryBall과 동일한 크기 유지
+            .background(
+                color = Color.LightGray.copy(alpha = 0.3f),
+                shape = CircleShape
+            )
+    )
 }
