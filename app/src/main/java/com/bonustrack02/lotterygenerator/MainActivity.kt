@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -122,6 +123,35 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+}
+
+@Composable
+fun LotteryBall(
+    number: Int,
+    modifier: Modifier = Modifier
+) {
+    // 색상 결정 로직
+    val ballColor = when (number) {
+        in 1..10 -> LotteryYellow // 기존에 정의된 색상 사용
+        in 11..20 -> LotteryBlue
+        in 21..30 -> LotteryRed
+        in 31..40 -> LotteryGray
+        else -> LotteryGreen
+    }
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .size(40.dp) // 공 크기
+            .background(color = ballColor, shape = CircleShape)
+    ) {
+        Text(
+            text = number.toString(),
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
 }
 
