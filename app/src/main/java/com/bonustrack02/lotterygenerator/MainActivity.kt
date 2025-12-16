@@ -5,17 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -131,9 +125,8 @@ fun LotteryBall(
     number: Int,
     modifier: Modifier = Modifier
 ) {
-    // 색상 결정 로직
     val ballColor = when (number) {
-        in 1..10 -> LotteryYellow // 기존에 정의된 색상 사용
+        in 1..10 -> LotteryYellow
         in 11..20 -> LotteryBlue
         in 21..30 -> LotteryRed
         in 31..40 -> LotteryGray
@@ -143,7 +136,7 @@ fun LotteryBall(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .size(40.dp) // 공 크기
+            .size(40.dp)
             .background(color = ballColor, shape = CircleShape)
     ) {
         Text(
@@ -156,66 +149,15 @@ fun LotteryBall(
 }
 
 @Composable
-fun RandomNumberBallsWithButton(
-    numbers: List<Int>,
-    onGenerateClick: () -> Unit,
+fun EmptyLotteryBall(
     modifier: Modifier = Modifier
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .padding(bottom = 16.dp)
-                .height(40.dp)
-        ) {
-            if (numbers.isNotEmpty()) {
-                numbers.forEach { number ->
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .background(
-                                color = when (number) {
-                                    in 1..10 -> LotteryYellow
-                                    in 11..20 -> LotteryBlue
-                                    in 21..30 -> LotteryRed
-                                    in 31..40 -> LotteryGray
-                                    else -> LotteryGreen
-                                },
-                                shape = CircleShape
-                            )
-                    ) {
-                        Text(
-                            text = number.toString(),
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-            } else {
-                repeat(6) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .background(
-                                color = Color.LightGray.copy(alpha = 0.3f),
-                                shape = CircleShape
-                            )
-                    )
-                }
-            }
-        }
-
-        Button(
-            onClick = onGenerateClick,
-            modifier = Modifier.padding(top = 16.dp)
-        ) {
-            Text(stringResource(R.string.generate_new_number_set))
-        }
-    }
+    Box(
+        modifier = modifier
+            .size(40.dp) // LotteryBall과 동일한 크기 유지
+            .background(
+                color = Color.LightGray.copy(alpha = 0.3f),
+                shape = CircleShape
+            )
+    )
 }
