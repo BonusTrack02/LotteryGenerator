@@ -7,4 +7,6 @@ interface GenerationHistoryRepository {
     suspend fun saveGenerationHistory(history: GenerationHistory)
 
     fun getGenerationHistoryStream(): Flow<List<GenerationHistory>>
+
+    suspend fun clearGenerationHistoryTable()
 }

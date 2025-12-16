@@ -34,4 +34,8 @@ class GenerationHistoryRepositoryImpl @Inject constructor(
             }
         }.flowOn(Dispatchers.IO)
     }
+
+    override suspend fun clearGenerationHistoryTable() {
+        dao.deleteAllGenerationHistory()
+    }
 }

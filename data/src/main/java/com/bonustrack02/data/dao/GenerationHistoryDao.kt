@@ -15,6 +15,9 @@ interface GenerationHistoryDao {
     @Delete
     suspend fun delete(generationHistoryEntity: GenerationHistoryEntity)
 
-    @Query("SELECT * FROM generationhistoryentity ORDER BY id DESC")
+    @Query("DELETE FROM generation_history")
+    suspend fun deleteAllGenerationHistory()
+
+    @Query("SELECT * FROM generation_history ORDER BY id DESC")
     fun getAll(): Flow<List<GenerationHistoryEntity>>
 }
