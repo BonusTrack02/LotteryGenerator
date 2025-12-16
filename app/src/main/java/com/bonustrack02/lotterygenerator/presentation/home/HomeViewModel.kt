@@ -1,7 +1,6 @@
 package com.bonustrack02.lotterygenerator.presentation.home
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.bonustrack02.domain.usecase.GenerateLotteryNumbersUseCase
 import com.bonustrack02.domain.usecase.SaveGenerationHistoryUseCase
@@ -26,18 +25,5 @@ class HomeViewModel @Inject constructor(
             saveGenerationHistory(history)
             _lotteryNumbers.value = history.numbers
         }
-    }
-}
-
-class HomeViewModelFactory(
-    private val generateLotteryNumbers: GenerateLotteryNumbersUseCase,
-    private val saveGenerationHistory: SaveGenerationHistoryUseCase,
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return HomeViewModel(generateLotteryNumbers, saveGenerationHistory) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
