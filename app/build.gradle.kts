@@ -1,9 +1,17 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+}
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
 }
 
 android {
@@ -16,6 +24,9 @@ android {
         targetSdk = 36
         versionCode = 4
         versionName = "2.0.0"
+
+        manifestPlaceholders["admobApplicationId"] = localProperties.getProperty("admobApplicationId") ?: ""
+        buildConfigField("String", "admobBannerId", "\"${localProperties.getProperty("admobBannerAdId")}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -41,6 +52,7 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 }
@@ -67,6 +79,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.play.services.ads)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
