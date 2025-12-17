@@ -6,11 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -32,6 +35,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.bonustrack02.lotterygenerator.presentation.history.HistoryScreen
+import com.bonustrack02.lotterygenerator.presentation.home.AdmobBanner
 import com.bonustrack02.lotterygenerator.presentation.home.HomeViewModel
 import com.bonustrack02.lotterygenerator.presentation.home.LotteryBallScreen
 import com.bonustrack02.lotterygenerator.presentation.navigation.BottomNavItem
@@ -74,30 +78,41 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                     bottomBar = {
-                        NavigationBar {
-                            bottomNavItems.forEach { item ->
-                                NavigationBarItem(
-                                    selected = currentRoute == item.route,
-                                    onClick = {
-                                        if (currentRoute != item.route) {
-                                            navController.navigate(item.route) {
-                                                // 스택 쌓임 및 중복 방지
-                                                popUpTo(navController.graph.startDestinationId) {
-                                                    saveState = true
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            AdmobBanner(
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            HorizontalDivider(
+                                color = Color.Gray,
+                                thickness = 1.dp
+                            )
+                            NavigationBar {
+                                bottomNavItems.forEach { item ->
+                                    NavigationBarItem(
+                                        selected = currentRoute == item.route,
+                                        onClick = {
+                                            if (currentRoute != item.route) {
+                                                navController.navigate(item.route) {
+                                                    // 스택 쌓임 및 중복 방지
+                                                    popUpTo(navController.graph.startDestinationId) {
+                                                        saveState = true
+                                                    }
+                                                    launchSingleTop = true
+                                                    restoreState = true
                                                 }
-                                                launchSingleTop = true
-                                                restoreState = true
                                             }
-                                        }
-                                    },
-                                    icon = {
-                                        Icon(
-                                            painter = painterResource(item.icon),
-                                            contentDescription = stringResource(item.label)
-                                        )
-                                    },
-                                    label = { Text(stringResource(item.label)) }
-                                )
+                                        },
+                                        icon = {
+                                            Icon(
+                                                painter = painterResource(item.icon),
+                                                contentDescription = stringResource(item.label)
+                                            )
+                                        },
+                                        label = { Text(stringResource(item.label)) }
+                                    )
+                                }
                             }
                         }
                     }
