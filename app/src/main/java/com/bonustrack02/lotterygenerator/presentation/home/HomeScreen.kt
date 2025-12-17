@@ -16,9 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import com.bonustrack02.lotterygenerator.BuildConfig
 import com.bonustrack02.lotterygenerator.EmptyLotteryBall
 import com.bonustrack02.lotterygenerator.LotteryBall
 import com.bonustrack02.lotterygenerator.R
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 
 @Composable
 fun LotteryBallScreen(viewModel: HomeViewModel, modifier: Modifier = Modifier) {
@@ -79,4 +84,21 @@ fun RandomNumberBallsWithButton(
             Text(stringResource(R.string.generate_new_number_set))
         }
     }
+}
+
+@Composable
+fun AdmobBanner(modifier: Modifier = Modifier) {
+    AndroidView(
+        modifier = modifier
+            .fillMaxWidth(),
+        factory = { context ->
+            AdView(context).apply {
+                setAdSize(AdSize.BANNER)
+
+                adUnitId = BuildConfig.admobBannerId
+
+                loadAd(AdRequest.Builder().build())
+            }
+        }
+    )
 }
