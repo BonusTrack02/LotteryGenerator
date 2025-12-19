@@ -12,8 +12,8 @@ interface GenerationHistoryDao {
     @Insert
     suspend fun insert(generationHistoryEntity: GenerationHistoryEntity)
 
-    @Delete
-    suspend fun delete(generationHistoryEntity: GenerationHistoryEntity)
+    @Query("DELETE FROM generation_history WHERE id = :id")
+    suspend fun delete(id: Int)
 
     @Query("DELETE FROM generation_history")
     suspend fun deleteAllGenerationHistory()

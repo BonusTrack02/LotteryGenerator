@@ -22,8 +22,8 @@ android {
         applicationId = "com.bonustrack02.lotterygenerator"
         minSdk = 28
         targetSdk = 36
-        versionCode = 5
-        versionName = "2.1.0"
+        versionCode = 6
+        versionName = "2.2.0"
 
         manifestPlaceholders["admobApplicationId"] = localProperties.getProperty("admobApplicationId") ?: ""
         buildConfigField("String", "admobBannerId", "\"${localProperties.getProperty("admobBannerAdId")}\"")
@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.icons.core)
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
