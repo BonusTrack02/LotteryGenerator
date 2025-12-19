@@ -30,12 +30,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bonustrack02.domain.model.GenerationHistory
 import com.bonustrack02.lotterygenerator.LotteryBall
+import com.bonustrack02.lotterygenerator.R
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -115,7 +117,7 @@ fun GenerationHistoryItem(
             offset = DpOffset(x = 16.dp, y = 0.dp)
         ) {
             DropdownMenuItem(
-                text = { Text("삭제하기") },
+                text = { Text(stringResource(R.string.delete)) },
                 onClick = {
                     isMenuExpanded = false
                     onLongClick(history.id)
@@ -123,8 +125,7 @@ fun GenerationHistoryItem(
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "delete",
-                        tint = Color.Red
+                        contentDescription = stringResource(R.string.delete),
                     )
                 }
             )
