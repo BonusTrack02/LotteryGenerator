@@ -10,4 +10,6 @@
     <string name="delete_all_generation_history_confirm">Permanently delete all generation history? Continue?</string>
     <string name="delete">delete</string>
     <string name="cancel">cancel</string>
+    <string name="sort_newest">Newest</string>
+    <string name="sort_oldest">Oldest</string>
 </resources>
