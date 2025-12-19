@@ -1,5 +1,8 @@
 package com.bonustrack02.lotterygenerator.presentation.history
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -57,7 +60,14 @@ fun HistoryScreen(
                 history = history,
                 onLongClick = { id ->
                     viewModel.deleteGenerationHistory(id)
-                }
+                },
+                modifier = Modifier.animateItem(
+                    fadeOutSpec = tween(durationMillis = 150),
+                    placementSpec = spring(
+                        dampingRatio = Spring.DampingRatioLowBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                )
             )
         }
     }
