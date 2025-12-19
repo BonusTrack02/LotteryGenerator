@@ -27,6 +27,10 @@ class GenerationHistoryRepositoryImpl @Inject constructor(
         dao.insert(entity)
     }
 
+    override suspend fun deleteGenerationHistory(id: Int) {
+        dao.delete(id)
+    }
+
     override fun getGenerationHistoryStream(): Flow<List<GenerationHistory>> {
         return dao.getAll().map { entities ->
             entities.map { entity ->
