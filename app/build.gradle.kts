@@ -27,6 +27,7 @@ android {
 
         manifestPlaceholders["admobApplicationId"] = localProperties.getProperty("admobApplicationId") ?: ""
         buildConfigField("String", "admobBannerId", "\"${localProperties.getProperty("admobBannerAdId")}\"")
+        buildConfigField("String", "admobNativeId", "\"${localProperties.getProperty("admobNativeAdId")}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
