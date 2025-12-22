@@ -7,6 +7,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -153,7 +154,7 @@ fun GenerationHistoryItem(
             shape = cardShape,
             modifier = modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp, horizontal = 16.dp)
+                .padding(vertical = 4.dp, horizontal = 8.dp)
                 .clip(cardShape)
                 .combinedClickable(
                     onClick = {},
@@ -175,10 +176,10 @@ fun GenerationHistoryItem(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                FlowRow (
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     history.numbers.forEach { number ->
                         LotteryBall(number = number)
