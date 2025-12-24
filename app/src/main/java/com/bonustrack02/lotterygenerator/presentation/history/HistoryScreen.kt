@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
@@ -72,7 +73,8 @@ fun HistoryScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
         Row(
@@ -149,6 +151,11 @@ fun GenerationHistoryItem(
     var isMenuExpanded by remember { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
     val cardShape = RoundedCornerShape(12.dp)
+    val configuration = LocalConfiguration.current
+    val isWideScreen = configuration.screenWidthDp > 600
+    val ballHorizontalArrangement =
+        if (isWideScreen) Arrangement.spacedBy(8.dp) else Arrangement.SpaceAround
+
     Box(modifier = modifier) {
         Card(
             shape = cardShape,
@@ -176,8 +183,8 @@ fun GenerationHistoryItem(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
-                FlowRow (
-                    horizontalArrangement = Arrangement.SpaceAround,
+                FlowRow(
+                    horizontalArrangement = ballHorizontalArrangement,
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
