@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:name=".di.App"
         android:allowBackup="true"
@@ -30,6 +36,12 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="${admobApplicationId}" />
+
+        <receiver android:name=".receiver.AlarmReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="com.bonustrack02.lotterygenerator.ACTION_DAILY_ALARM" />
+            </intent-filter>
+        </receiver>
 
     </application>
 
