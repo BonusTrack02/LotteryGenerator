@@ -7,6 +7,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
@@ -71,7 +73,8 @@ fun HistoryScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
         Row(
@@ -148,12 +151,17 @@ fun GenerationHistoryItem(
     var isMenuExpanded by remember { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
     val cardShape = RoundedCornerShape(12.dp)
+    val configuration = LocalConfiguration.current
+    val isWideScreen = configuration.screenWidthDp > 600
+    val ballHorizontalArrangement =
+        if (isWideScreen) Arrangement.spacedBy(8.dp) else Arrangement.SpaceAround
+
     Box(modifier = modifier) {
         Card(
             shape = cardShape,
             modifier = modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp, horizontal = 16.dp)
+                .padding(vertical = 4.dp, horizontal = 8.dp)
                 .clip(cardShape)
                 .combinedClickable(
                     onClick = {},
@@ -175,10 +183,10 @@ fun GenerationHistoryItem(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                FlowRow(
+                    horizontalArrangement = ballHorizontalArrangement,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     history.numbers.forEach { number ->
                         LotteryBall(number = number)
