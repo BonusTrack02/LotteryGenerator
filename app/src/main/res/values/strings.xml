@@ -11,4 +11,6 @@
     <string name="cancel">취소</string>
     <string name="sort_newest">최신순</string>
     <string name="sort_oldest">과거순</string>
+    <string name="scheduled_daily_notification_name">매일 알림</string>
+    <string name="scheduled_daily_notification_content_text">로또 번호를 생성해보세요!</string>
 </resources>

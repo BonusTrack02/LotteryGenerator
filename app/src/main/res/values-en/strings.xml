@@ -12,4 +12,6 @@
     <string name="cancel">cancel</string>
     <string name="sort_newest">Newest</string>
     <string name="sort_oldest">Oldest</string>
+    <string name="scheduled_daily_notification_name">Daily Reminder</string>
+    <string name="scheduled_daily_notification_content_text">Generate lottery numbers!</string>
 </resources>
