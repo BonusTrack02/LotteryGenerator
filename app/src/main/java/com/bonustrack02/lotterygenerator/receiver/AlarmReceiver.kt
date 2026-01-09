@@ -8,28 +8,25 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.bonustrack02.domain.repository.AlarmRepository
+import com.bonustrack02.domain.usecase.RescheduleAlarmUseCase
 import com.bonustrack02.lotterygenerator.MainActivity
 import com.bonustrack02.lotterygenerator.R
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class AlarmReceiver : BroadcastReceiver() {
     @Inject
-    lateinit var alarmRepository: AlarmRepository
+    lateinit var rescheduleAlarmUseCase: RescheduleAlarmUseCase
 
     override fun onReceive(context: Context, intent: Intent) {
         showNotification(context)
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val savedTime = alarmRepository.getSavedAlarmTime()
-            if (savedTime != null) {
-                alarmRepository.updateAlarm(savedTime)
-            }
-        }
+        rescheduleNextAlarm()
     }
 
     private fun showNotification(context: Context) {
@@ -64,5 +61,20 @@ class AlarmReceiver : BroadcastReceiver() {
             .setAutoCancel(true)
 
         manager.notify(220, builder.build())
+    }
+
+    private fun rescheduleNextAlarm() {
+        val pendingResult = goAsync()
+        val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+        scope.launch {
+            try {
+                rescheduleAlarmUseCase()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                pendingResult.finish()
+            }
+        }
     }
 }

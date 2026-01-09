@@ -4,7 +4,7 @@ import com.bonustrack02.domain.model.AlarmTime
 import com.bonustrack02.domain.repository.AlarmRepository
 import javax.inject.Inject
 
-class SetAlarmUseCase @Inject constructor(
+class SaveAlarmUseCase @Inject constructor(
     private val repository: AlarmRepository
 ) {
     suspend operator fun invoke(hour: Int) {
