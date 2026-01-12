@@ -54,7 +54,7 @@ class AlarmReceiver : BroadcastReceiver() {
         )
 
         val builder = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.mipmap.icon_app_foreground)
+            .setSmallIcon(R.drawable.icon_app_foreground)
             .setContentTitle(context.getString(R.string.scheduled_daily_notification_name))
             .setContentText(context.getString(R.string.scheduled_daily_notification_content_text))
             .setContentIntent(pendingIntent)
