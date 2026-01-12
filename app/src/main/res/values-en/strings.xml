@@ -12,4 +12,12 @@
     <string name="cancel">cancel</string>
     <string name="sort_newest">Newest</string>
     <string name="sort_oldest">Oldest</string>
+    <string name="scheduled_daily_notification_name">Daily Reminder</string>
+    <string name="scheduled_daily_notification_content_text">Generate lottery numbers!</string>
+    <string name="settings_notification_use">Use Notification</string>
+    <string name="settings_notification_description">Get notifications at a scheduled time every day.</string>
+    <string name="notification_time_format">%1$02d:00</string>
+    <string name="save">save</string>
+    <string name="notification_time">Notification Time</string>
+    <string name="select_notification_time">Choose a notification time.</string>
 </resources>
