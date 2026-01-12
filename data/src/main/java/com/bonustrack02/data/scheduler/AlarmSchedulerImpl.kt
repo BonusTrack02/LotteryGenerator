@@ -29,15 +29,12 @@ class AlarmSchedulerImpl @Inject constructor(
 
         val triggerTime = calculateTriggerTime(alarmTime.hour)
 
-        try {
-            alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP,
-                triggerTime,
-                pendingIntent
-            )
-        } catch (e: SecurityException) {
-            e.printStackTrace()
-        }
+        alarmManager.setWindow(
+            AlarmManager.RTC_WAKEUP,
+            triggerTime,
+            10 * 60 * 1000L,
+            pendingIntent
+        )
     }
 
     override fun cancel() {
