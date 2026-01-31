@@ -159,9 +159,8 @@ fun HistoryScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 48.dp) // 하단 네비게이션바 등을 고려한 패딩
+                    .padding(bottom = 48.dp)
             ) {
-                // 삭제 메뉴 아이템
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -177,7 +176,6 @@ fun HistoryScreen(
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = stringResource(R.string.delete),
-                        tint = MaterialTheme.colorScheme.error // 경고 색상 (빨강)
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
