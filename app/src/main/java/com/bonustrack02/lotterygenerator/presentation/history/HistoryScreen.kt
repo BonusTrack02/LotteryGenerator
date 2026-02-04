@@ -3,6 +3,7 @@ package com.bonustrack02.lotterygenerator.presentation.history
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,14 +23,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,7 +47,6 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,6 +58,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
     viewModel: HistoryViewModel = hiltViewModel()
@@ -64,6 +67,10 @@ fun HistoryScreen(
     val currentSortType by viewModel.sortType.collectAsStateWithLifecycle()
     var previousSortType by remember { mutableStateOf(currentSortType) }
     val listState = rememberLazyListState()
+
+    var showBottomSheet by remember { mutableStateOf(false) }
+    var selectedHistoryId by remember { mutableStateOf<Int?>(null) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     LaunchedEffect(generationHistories) {
         if (previousSortType != currentSortType) {
@@ -127,7 +134,8 @@ fun HistoryScreen(
                 GenerationHistoryItem(
                     history = history,
                     onLongClick = { id ->
-                        viewModel.deleteGenerationHistory(id)
+                        selectedHistoryId = id
+                        showBottomSheet = true
                     },
                     modifier = Modifier.animateItem(
                         fadeOutSpec = tween(durationMillis = 150),
@@ -140,6 +148,44 @@ fun HistoryScreen(
             }
         }
     }
+
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showBottomSheet = false },
+            sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.surface,
+            dragHandle = { BottomSheetDefaults.DragHandle() }
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 48.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            selectedHistoryId?.let { id ->
+                                viewModel.deleteGenerationHistory(id)
+                            }
+                            showBottomSheet = false
+                        }
+                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = stringResource(R.string.delete),
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = stringResource(R.string.delete),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -148,7 +194,6 @@ fun GenerationHistoryItem(
     onLongClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var isMenuExpanded by remember { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
     val cardShape = RoundedCornerShape(12.dp)
     val configuration = LocalConfiguration.current
@@ -167,7 +212,7 @@ fun GenerationHistoryItem(
                     onClick = {},
                     onLongClick = {
                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                        isMenuExpanded = true
+                        onLongClick(history.id)
                     }
                 ),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -193,26 +238,6 @@ fun GenerationHistoryItem(
                     }
                 }
             }
-        }
-
-        DropdownMenu(
-            expanded = isMenuExpanded,
-            onDismissRequest = { isMenuExpanded = false },
-            offset = DpOffset(x = 16.dp, y = 0.dp)
-        ) {
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.delete)) },
-                onClick = {
-                    isMenuExpanded = false
-                    onLongClick(history.id)
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = stringResource(R.string.delete),
-                    )
-                }
-            )
         }
     }
 }
