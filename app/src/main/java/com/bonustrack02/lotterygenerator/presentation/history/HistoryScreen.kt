@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -38,6 +39,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -54,6 +57,8 @@ import com.bonustrack02.domain.model.GenerationHistory
 import com.bonustrack02.domain.model.SortType
 import com.bonustrack02.lotterygenerator.LotteryBall
 import com.bonustrack02.lotterygenerator.R
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -67,6 +72,9 @@ fun HistoryScreen(
     val currentSortType by viewModel.sortType.collectAsStateWithLifecycle()
     var previousSortType by remember { mutableStateOf(currentSortType) }
     val listState = rememberLazyListState()
+
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     var showBottomSheet by remember { mutableStateOf(false) }
     var selectedHistoryId by remember { mutableStateOf<Int?>(null) }
@@ -161,6 +169,45 @@ fun HistoryScreen(
                     .fillMaxWidth()
                     .padding(bottom = 48.dp)
             ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            val historyToShare = generationHistories.find { it.id == selectedHistoryId }
+
+                            if (historyToShare != null) {
+                                scope.launch {
+//                                    val bitmap = ShareUtils.captureComposableAsBitmap(context) {
+//                                        GeneratedTicketImage(
+//                                            selectedNumbers = historyToShare.numbers,
+//                                            timestamp = historyToShare.generationTimestamp
+//                                        )
+//                                    }
+//
+//                                    withContext(Dispatchers.IO) {
+//                                        val uri = ShareUtils.saveBitmapToCache(context, bitmap)
+//                                        uri?.let { ShareUtils.shareImage(context, it) }
+//                                    }
+
+                                    showBottomSheet = false
+                                }
+                            }
+                        }
+                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Share,
+                        contentDescription = stringResource(R.string.share_number_set_image),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = stringResource(R.string.share_number_set_image),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
