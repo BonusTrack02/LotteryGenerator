@@ -39,6 +39,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -57,6 +58,8 @@ import com.bonustrack02.domain.model.GenerationHistory
 import com.bonustrack02.domain.model.SortType
 import com.bonustrack02.lotterygenerator.LotteryBall
 import com.bonustrack02.lotterygenerator.R
+import com.bonustrack02.lotterygenerator.util.ShareUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.Instant
@@ -75,6 +78,7 @@ fun HistoryScreen(
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val compositionContext = rememberCompositionContext()
 
     var showBottomSheet by remember { mutableStateOf(false) }
     var selectedHistoryId by remember { mutableStateOf<Int?>(null) }
@@ -173,21 +177,25 @@ fun HistoryScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            val historyToShare = generationHistories.find { it.id == selectedHistoryId }
+                            val historyToShare =
+                                generationHistories.find { it.id == selectedHistoryId }
 
                             if (historyToShare != null) {
                                 scope.launch {
-//                                    val bitmap = ShareUtils.captureComposableAsBitmap(context) {
-//                                        GeneratedTicketImage(
-//                                            selectedNumbers = historyToShare.numbers,
-//                                            timestamp = historyToShare.generationTimestamp
-//                                        )
-//                                    }
-//
-//                                    withContext(Dispatchers.IO) {
-//                                        val uri = ShareUtils.saveBitmapToCache(context, bitmap)
-//                                        uri?.let { ShareUtils.shareImage(context, it) }
-//                                    }
+                                    val bitmap = ShareUtils.captureComposableAsBitmap(
+                                        context = context,
+                                        compositionContext = compositionContext
+                                    ) {
+                                        GeneratedTicketImage(
+                                            selectedNumbers = historyToShare.numbers,
+                                            timestamp = historyToShare.generationTimestamp
+                                        )
+                                    }
+
+                                    withContext(Dispatchers.IO) {
+                                        val uri = ShareUtils.saveBitmapToCache(context, bitmap)
+                                        uri?.let { ShareUtils.shareImage(context, it) }
+                                    }
 
                                     showBottomSheet = false
                                 }
