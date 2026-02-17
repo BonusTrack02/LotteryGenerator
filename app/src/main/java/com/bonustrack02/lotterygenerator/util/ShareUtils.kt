@@ -106,40 +106,4 @@ object ShareUtils {
             }
         }
     }
-
-    fun saveBitmapToCache(context: Context, bitmap: Bitmap): Uri? {
-        return try {
-            val cachePath = File(context.cacheDir, "images")
-            cachePath.mkdirs()
-
-            val timestamp = Instant.now().epochSecond
-            val pathName = "$cachePath/${timestamp}_ticket.png"
-            val stream = FileOutputStream(pathName)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-            stream.close()
-
-            FileProvider.getUriForFile(
-                context,
-                "${context.packageName}.fileprovider",
-                File(pathName)
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-    }
-
-    fun shareImage(context: Context, uri: Uri) {
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "image/png"
-            putExtra(Intent.EXTRA_STREAM, uri)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-        context.startActivity(
-            Intent.createChooser(
-                intent,
-                context.getString(R.string.share_number_set_title)
-            )
-        )
-    }
 }

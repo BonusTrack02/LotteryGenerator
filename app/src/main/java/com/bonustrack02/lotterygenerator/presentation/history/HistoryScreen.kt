@@ -1,5 +1,6 @@
 package com.bonustrack02.lotterygenerator.presentation.history
 
+import android.widget.Toast
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -91,6 +92,30 @@ fun HistoryScreen(
         }
     }
 
+    LaunchedEffect(true) {
+        viewModel.sideEffect.collect { effect ->
+            when (effect) {
+                is HistorySideEffect.RequestCapture -> {
+                    val bitmap = ShareUtils.captureComposableAsBitmap(
+                        context = context,
+                        compositionContext = compositionContext
+                    ) {
+                        GeneratedTicketImage(
+                            selectedNumbers = effect.history.numbers,
+                            timestamp = Instant.now().epochSecond
+                        )
+                    }
+
+                    viewModel.processAndShareBitmap(bitmap)
+                }
+
+                is HistorySideEffect.ShowError -> {
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -177,29 +202,8 @@ fun HistoryScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            val historyToShare =
-                                generationHistories.find { it.id == selectedHistoryId }
-
-                            if (historyToShare != null) {
-                                scope.launch {
-                                    val bitmap = ShareUtils.captureComposableAsBitmap(
-                                        context = context,
-                                        compositionContext = compositionContext
-                                    ) {
-                                        GeneratedTicketImage(
-                                            selectedNumbers = historyToShare.numbers,
-                                            timestamp = historyToShare.generationTimestamp
-                                        )
-                                    }
-
-                                    withContext(Dispatchers.IO) {
-                                        val uri = ShareUtils.saveBitmapToCache(context, bitmap)
-                                        uri?.let { ShareUtils.shareImage(context, it) }
-                                    }
-
-                                    showBottomSheet = false
-                                }
-                            }
+                            selectedHistoryId?.let { viewModel.onShareClick(it) }
+                            showBottomSheet = false
                         }
                         .padding(horizontal = 24.dp, vertical = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
