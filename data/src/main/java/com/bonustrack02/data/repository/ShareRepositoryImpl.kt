@@ -2,16 +2,14 @@ package com.bonustrack02.data.repository
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import com.bonustrack02.domain.repository.ShareRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.FileOutputStream
 import javax.inject.Inject
-import androidx.core.net.toUri
 
 class ShareRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context

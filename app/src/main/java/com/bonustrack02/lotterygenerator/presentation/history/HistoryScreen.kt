@@ -1,5 +1,6 @@
 package com.bonustrack02.lotterygenerator.presentation.history
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -60,9 +61,6 @@ import com.bonustrack02.domain.model.SortType
 import com.bonustrack02.lotterygenerator.LotteryBall
 import com.bonustrack02.lotterygenerator.R
 import com.bonustrack02.lotterygenerator.util.ShareUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -110,6 +108,7 @@ fun HistoryScreen(
                 }
 
                 is HistorySideEffect.ShowError -> {
+                    Log.d(javaClass.simpleName, effect.message)
                     Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
                 }
             }

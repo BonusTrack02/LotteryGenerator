@@ -1,10 +1,8 @@
 package com.bonustrack02.lotterygenerator.util
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.PixelFormat
-import android.net.Uri
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
@@ -13,17 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionContext
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.content.FileProvider
 import androidx.core.view.drawToBitmap
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
-import com.bonustrack02.lotterygenerator.R
 import kotlinx.coroutines.suspendCancellableCoroutine
-import java.io.File
-import java.io.FileOutputStream
-import java.time.Instant
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
