@@ -71,9 +71,7 @@ fun HistoryScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val generationHistories by viewModel.generationHistories.collectAsStateWithLifecycle()
-    val currentSortType by viewModel.sortType.collectAsStateWithLifecycle()
-    var previousSortType by remember { mutableStateOf(currentSortType) }
+    var previousSortType by remember { mutableStateOf(uiState.sortType) }
     val listState = rememberLazyListState()
 
     val context = LocalContext.current
@@ -117,10 +115,10 @@ fun HistoryScreen(
         }
     }
 
-    LaunchedEffect(generationHistories) {
-        if (previousSortType != currentSortType) {
+    LaunchedEffect(uiState.sortType) {
+        if (previousSortType != uiState.sortType) {
             listState.scrollToItem(0)
-            previousSortType = currentSortType
+            previousSortType = uiState.sortType
         }
     }
 
@@ -137,11 +135,11 @@ fun HistoryScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             FilterChip(
-                selected = currentSortType == SortType.NEWEST,
+                selected = uiState.sortType == SortType.NEWEST,
                 onClick = { viewModel.updateSortType(SortType.NEWEST) },
                 label = { Text(stringResource(R.string.sort_newest)) },
                 leadingIcon = {
-                    if (currentSortType == SortType.NEWEST) {
+                    if (uiState.sortType == SortType.NEWEST) {
                         Icon(
                             imageVector = Icons.Default.Check,
                             contentDescription = null,
@@ -154,11 +152,11 @@ fun HistoryScreen(
             Spacer(modifier = Modifier.width(8.dp))
 
             FilterChip(
-                selected = currentSortType == SortType.OLDEST,
+                selected = uiState.sortType == SortType.OLDEST,
                 onClick = { viewModel.updateSortType(SortType.OLDEST) },
                 label = { Text(stringResource(R.string.sort_oldest)) },
                 leadingIcon = {
-                    if (currentSortType == SortType.OLDEST) {
+                    if (uiState.sortType == SortType.OLDEST) {
                         Icon(
                             imageVector = Icons.Default.Check,
                             contentDescription = null,
@@ -173,7 +171,7 @@ fun HistoryScreen(
             state = listState
         ) {
             items(
-                items = generationHistories,
+                items = uiState.histories,
                 key = { it.id }
             ) { history ->
                 GenerationHistoryItem(
