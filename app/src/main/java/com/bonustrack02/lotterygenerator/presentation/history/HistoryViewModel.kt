@@ -1,7 +1,6 @@
 package com.bonustrack02.lotterygenerator.presentation.history
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bonustrack02.domain.model.GenerationHistory
@@ -12,14 +11,13 @@ import com.bonustrack02.domain.usecase.SaveLotteryTicketImageUseCase
 import com.bonustrack02.domain.usecase.ShareLotteryTicketImageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.time.Instant
@@ -27,7 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
-    getGenerationHistoryUseCase: GetGenerationHistoryUseCase,
+    private val getGenerationHistoryUseCase: GetGenerationHistoryUseCase,
     private val deleteGenerationHistoryUseCase: DeleteGenerationHistoryUseCase,
     private val saveLotteryTicketImageUseCase: SaveLotteryTicketImageUseCase,
     private val shareLotteryTicketImageUseCase: ShareLotteryTicketImageUseCase
@@ -35,8 +33,12 @@ class HistoryViewModel @Inject constructor(
     private val _sortType = MutableStateFlow(SortType.NEWEST)
     val sortType = _sortType.asStateFlow()
 
-    private val _sideEffect = Channel<HistorySideEffect>()
-    val sideEffect = _sideEffect.receiveAsFlow()
+    private val _uiState = MutableStateFlow(HistoryUiState())
+    val uiState = _uiState.asStateFlow()
+
+//    init {
+//        loadHistories()
+//    }
 
     val generationHistories: StateFlow<List<GenerationHistory>> = getGenerationHistoryUseCase().combine(_sortType) { list, sortType ->
         when (sortType) {
@@ -60,14 +62,22 @@ class HistoryViewModel @Inject constructor(
         }
     }
 
+    private fun loadHistories() {
+        viewModelScope.launch {
+            getGenerationHistoryUseCase().collect { list ->
+                _uiState.update { it.copy(histories = list) }
+            }
+        }
+    }
+
     fun onShareClick(historyId: Int) {
         viewModelScope.launch {
             val history = generationHistories.value.find { it.id == historyId }
 
             if (history != null) {
-                _sideEffect.send(HistorySideEffect.RequestCapture(history))
+                _uiState.update { it.copy(shareRequest = history) }
             } else {
-                _sideEffect.send(HistorySideEffect.ShowError("데이터를 찾을 수 없습니다."))
+                showErrorMessage("에러 발생")
             }
         }
     }
@@ -87,13 +97,22 @@ class HistoryViewModel @Inject constructor(
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                _sideEffect.send(HistorySideEffect.ShowError("공유 중 오류가 발생했습니다."))
+                showErrorMessage("공유 중 오류가 발생했습니다.")
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
             }
         }
     }
-}
 
-sealed interface HistorySideEffect {
-    data class RequestCapture(val history: GenerationHistory): HistorySideEffect
-    data class ShowError(val message: String): HistorySideEffect
+    private fun showErrorMessage(message: String) {
+        _uiState.update { it.copy(message = message) }
+    }
+
+    fun onErrorMessageShown() {
+        _uiState.update { it.copy(message = null) }
+    }
+
+    fun onShareRequestConsumed() {
+        _uiState.update { it.copy(shareRequest = null) }
+    }
 }

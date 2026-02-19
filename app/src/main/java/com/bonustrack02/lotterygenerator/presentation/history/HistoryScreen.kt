@@ -1,6 +1,5 @@
 package com.bonustrack02.lotterygenerator.presentation.history
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -29,6 +28,7 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -42,7 +42,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCompositionContext
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,48 +69,58 @@ import java.time.format.DateTimeFormatter
 fun HistoryScreen(
     viewModel: HistoryViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     val generationHistories by viewModel.generationHistories.collectAsStateWithLifecycle()
     val currentSortType by viewModel.sortType.collectAsStateWithLifecycle()
     var previousSortType by remember { mutableStateOf(currentSortType) }
     val listState = rememberLazyListState()
 
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val compositionContext = rememberCompositionContext()
 
     var showBottomSheet by remember { mutableStateOf(false) }
     var selectedHistoryId by remember { mutableStateOf<Int?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
+    if (uiState.shareRequest != null) {
+        val historyToShare = uiState.shareRequest!!
+
+        LaunchedEffect(historyToShare) {
+            val bitmap = ShareUtils.captureComposableAsBitmap(
+                context = context,
+                compositionContext = compositionContext
+            ) {
+                GeneratedTicketImage(
+                    selectedNumbers = historyToShare.numbers,
+                    timestamp = historyToShare.generationTimestamp
+                )
+            }
+
+            viewModel.processAndShareBitmap(bitmap)
+
+            viewModel.onShareRequestConsumed()
+        }
+    }
+
+    if (uiState.message != null) {
+        val message = uiState.message
+        LaunchedEffect(message) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            viewModel.onErrorMessageShown()
+        }
+    }
+
+    if (uiState.isLoading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    }
+
     LaunchedEffect(generationHistories) {
         if (previousSortType != currentSortType) {
             listState.scrollToItem(0)
             previousSortType = currentSortType
-        }
-    }
-
-    LaunchedEffect(true) {
-        viewModel.sideEffect.collect { effect ->
-            when (effect) {
-                is HistorySideEffect.RequestCapture -> {
-                    val bitmap = ShareUtils.captureComposableAsBitmap(
-                        context = context,
-                        compositionContext = compositionContext
-                    ) {
-                        GeneratedTicketImage(
-                            selectedNumbers = effect.history.numbers,
-                            timestamp = Instant.now().epochSecond
-                        )
-                    }
-
-                    viewModel.processAndShareBitmap(bitmap)
-                }
-
-                is HistorySideEffect.ShowError -> {
-                    Log.d(javaClass.simpleName, effect.message)
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
-                }
-            }
         }
     }
 
@@ -266,13 +275,10 @@ fun GenerationHistoryItem(
                 .fillMaxWidth()
                 .padding(vertical = 4.dp, horizontal = 8.dp)
                 .clip(cardShape)
-                .combinedClickable(
-                    onClick = {},
-                    onLongClick = {
-                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                        onLongClick(history.id)
-                    }
-                ),
+                .combinedClickable(onClick = {}, onLongClick = {
+                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onLongClick(history.id)
+                }),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
