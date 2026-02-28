@@ -11,12 +11,13 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bonustrack02.lotterygenerator.BuildConfig
 import com.bonustrack02.lotterygenerator.EmptyLotteryBall
 import com.bonustrack02.lotterygenerator.LotteryBall
@@ -27,7 +28,7 @@ import com.google.android.gms.ads.AdView
 
 @Composable
 fun LotteryBallScreen(viewModel: HomeViewModel, modifier: Modifier = Modifier) {
-    val numbers = viewModel.lotteryNumbers.collectAsState().value
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier.fillMaxHeight(),
@@ -41,7 +42,7 @@ fun LotteryBallScreen(viewModel: HomeViewModel, modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.Center,
         ) {
             RandomNumberBallsWithButton(
-                numbers = numbers,
+                numbers = uiState.lotteryNumbers,
                 onGenerateClick = { viewModel.generateNewNumbers() }
             )
         }
