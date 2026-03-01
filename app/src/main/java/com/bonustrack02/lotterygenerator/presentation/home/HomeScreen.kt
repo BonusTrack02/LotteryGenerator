@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bonustrack02.lotterygenerator.BuildConfig
 import com.bonustrack02.lotterygenerator.EmptyLotteryBall
@@ -27,7 +28,10 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 
 @Composable
-fun LotteryBallScreen(viewModel: HomeViewModel, modifier: Modifier = Modifier) {
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
@@ -52,8 +56,7 @@ fun LotteryBallScreen(viewModel: HomeViewModel, modifier: Modifier = Modifier) {
 @Composable
 fun RandomNumberBallsWithButton(
     numbers: List<Int>,
-    onGenerateClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onGenerateClick: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
