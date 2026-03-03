@@ -29,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -38,6 +39,7 @@ import com.bonustrack02.lotterygenerator.presentation.history.HistoryScreen
 import com.bonustrack02.lotterygenerator.presentation.home.AdmobBanner
 import com.bonustrack02.lotterygenerator.presentation.home.HomeScreen
 import com.bonustrack02.lotterygenerator.presentation.navigation.BottomNavItem
+import com.bonustrack02.lotterygenerator.presentation.navigation.Screen
 import com.bonustrack02.lotterygenerator.presentation.navigation.bottomNavItems
 import com.bonustrack02.lotterygenerator.presentation.settings.SettingsScreen
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryBlue
@@ -117,12 +119,19 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = BottomNavItem.Home.route,
+                        startDestination = Screen.Home.route,
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable(BottomNavItem.Home.route) { HomeScreen() }
-                        composable(BottomNavItem.History.route) { HistoryScreen() }
-                        composable(BottomNavItem.Settings.route) { SettingsScreen() }
+                        composable(Screen.Home.route) { HomeScreen() }
+                        composable(Screen.History.route) { HistoryScreen(
+                            onNavigateToPurchase = {
+                                navController.navigate(Screen.WebView.route)
+                            }
+                        ) }
+                        composable(Screen.Settings.route) { SettingsScreen() }
+                        activity(Screen.WebView.route) {
+                            activityClass = WebViewActivity::class
+                        }
                     }
                 }
             }

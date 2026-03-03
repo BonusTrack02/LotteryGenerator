@@ -32,6 +32,9 @@
             android:name=".activities.MainActivity"
             android:exported="false" />
 
+        <activity android:name=".activities.WebViewActivity"
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="${admobApplicationId}" />
