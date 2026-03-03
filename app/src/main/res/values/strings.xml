@@ -22,4 +22,5 @@
     <string name="share_number_set_image">이미지로 공유하기</string>
     <string name="share_number_set_title">로또 번호 공유하기</string>
     <string name="share_image_datetime">발행일시: %s</string>
+    <string name="go_to_purchase">구매하러 가기</string>
 </resources>
