@@ -58,7 +58,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bonustrack02.domain.model.GenerationHistory
 import com.bonustrack02.domain.model.SortType
-import com.bonustrack02.lotterygenerator.LotteryBall
+import com.bonustrack02.lotterygenerator.activities.LotteryBall
 import com.bonustrack02.lotterygenerator.R
 import com.bonustrack02.lotterygenerator.util.ShareUtils
 import java.time.Instant

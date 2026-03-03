@@ -1,4 +1,4 @@
-package com.bonustrack02.lotterygenerator
+package com.bonustrack02.lotterygenerator.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.bonustrack02.lotterygenerator.R
 import com.bonustrack02.lotterygenerator.presentation.splash.SplashEvent
 import com.bonustrack02.lotterygenerator.presentation.splash.SplashViewModel
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryGeneratorTheme
@@ -86,6 +87,7 @@ class SplashActivity : ComponentActivity() {
                             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                         }
                     }
+
                     is SplashEvent.NavigateToMain -> {
                         onNavigateToMain()
                     }

@@ -1,4 +1,4 @@
-package com.bonustrack02.lotterygenerator
+package com.bonustrack02.lotterygenerator.activities
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -33,6 +33,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.bonustrack02.lotterygenerator.R
 import com.bonustrack02.lotterygenerator.presentation.history.HistoryScreen
 import com.bonustrack02.lotterygenerator.presentation.home.AdmobBanner
 import com.bonustrack02.lotterygenerator.presentation.home.HomeScreen
@@ -93,7 +94,6 @@ class MainActivity : ComponentActivity() {
                                         onClick = {
                                             if (currentRoute != item.route) {
                                                 navController.navigate(item.route) {
-                                                    // 스택 쌓임 및 중복 방지
                                                     popUpTo(navController.graph.startDestinationId) {
                                                         saveState = true
                                                     }
@@ -133,7 +133,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun LotteryBall(
     number: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier.Companion
 ) {
     val ballColor = when (number) {
         in 1..10 -> LotteryYellow
@@ -160,7 +160,7 @@ fun LotteryBall(
 
 @Composable
 fun EmptyLotteryBall(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier.Companion
 ) {
     Box(
         modifier = modifier

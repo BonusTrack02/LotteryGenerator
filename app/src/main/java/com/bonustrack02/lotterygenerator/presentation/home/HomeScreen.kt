@@ -20,8 +20,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bonustrack02.lotterygenerator.BuildConfig
-import com.bonustrack02.lotterygenerator.EmptyLotteryBall
-import com.bonustrack02.lotterygenerator.LotteryBall
+import com.bonustrack02.lotterygenerator.activities.EmptyLotteryBall
+import com.bonustrack02.lotterygenerator.activities.LotteryBall
 import com.bonustrack02.lotterygenerator.R
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
