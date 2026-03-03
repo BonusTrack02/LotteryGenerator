@@ -72,15 +72,14 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
+    val uiState by viewModel.uiState.collectAsState()
     var showDeletionConfirmDialog by remember { mutableStateOf(false) }
-    val nativeAd by viewModel.nativeAdState.collectAsState()
 
-    val alarmState by viewModel.alarmState.collectAsState()
     var showBottomSheet by remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
-    val isAlarmOn = alarmState != null
+    val isAlarmOn = uiState.alarmState != null
 
     LaunchedEffect(Unit) {
         viewModel.loadNativeAd(context)
@@ -161,7 +160,7 @@ fun SettingsScreen(
                             Text(
                                 text = stringResource(
                                     R.string.notification_time_format,
-                                    alarmState!!.hour
+                                    uiState.alarmState!!.hour
                                 ),
                                 fontSize = with(density) { 16.dp.toSp() },
                                 fontWeight = FontWeight.Bold,
@@ -196,8 +195,8 @@ fun SettingsScreen(
                 ) {
                     Text(stringResource(R.string.delete_all_generation_history_confirm))
 
-                    if (nativeAd != null) {
-                        NativeAdViewComposable(nativeAd!!)
+                    if (uiState.nativeAd != null) {
+                        NativeAdViewComposable(uiState.nativeAd!!)
                     } else {
                         Box(
                             modifier = Modifier
@@ -239,7 +238,7 @@ fun SettingsScreen(
             dragHandle = { BottomSheetDefaults.DragHandle() }
         ) {
             HourPickerBottomSheetContent(
-                initialHour = alarmState?.hour ?: 9,
+                initialHour = uiState.alarmState?.hour ?: 9,
                 onConfirm = { selectedHour ->
                     viewModel.setAlarm(selectedHour)
                     showBottomSheet = false

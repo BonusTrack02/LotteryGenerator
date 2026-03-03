@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,14 +17,20 @@ class HomeViewModel @Inject constructor(
     private val generateLotteryNumbers: GenerateLotteryNumbersUseCase,
     private val saveGenerationHistory: SaveGenerationHistoryUseCase,
 ) : ViewModel() {
-    private val _lotteryNumbers = MutableStateFlow<List<Int>>(emptyList())
-    val lotteryNumbers: StateFlow<List<Int>> = _lotteryNumbers.asStateFlow()
+    private val _uiState = MutableStateFlow(HomeUiState())
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     fun generateNewNumbers() {
         viewModelScope.launch {
             val history = generateLotteryNumbers()
             saveGenerationHistory(history)
-            _lotteryNumbers.value = history.numbers
+
+            _uiState.update { currentState ->
+                currentState.copy(
+                    lotteryNumbers = history.numbers,
+                    isLoading = false
+                )
+            }
         }
     }
 }
