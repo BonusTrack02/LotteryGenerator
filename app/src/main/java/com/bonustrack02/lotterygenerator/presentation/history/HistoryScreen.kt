@@ -211,6 +211,7 @@ fun HistoryScreen(
                         .fillMaxWidth()
                         .clickable {
                             onNavigateToPurchase()
+                            showBottomSheet = false
                         }
                         .padding(horizontal = 24.dp, vertical = 16.dp),
                     verticalAlignment = Alignment.CenterVertically

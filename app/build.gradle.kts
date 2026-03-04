@@ -39,6 +39,7 @@ android {
             manifestPlaceholders["admobApplicationId"] = localProperties.getProperty("debugAdmobApplicationId") ?: ""
             buildConfigField("String", "admobBannerId", "\"${localProperties.getProperty("debugAdmobBannerAdId")}\"")
             buildConfigField("String", "admobNativeId", "\"${localProperties.getProperty("debugAdmobNativeAdId")}\"")
+            buildConfigField("String", "admobWebViewBannerId", "\"${localProperties.getProperty("debugAdmobWebViewBannerAdId")}\"")
 
             isMinifyEnabled = false
             proguardFiles(
@@ -50,6 +51,7 @@ android {
             manifestPlaceholders["admobApplicationId"] = localProperties.getProperty("admobApplicationId") ?: ""
             buildConfigField("String", "admobBannerId", "\"${localProperties.getProperty("admobBannerAdId")}\"")
             buildConfigField("String", "admobNativeId", "\"${localProperties.getProperty("admobNativeAdId")}\"")
+            buildConfigField("String", "admobWebViewBannerId", "\"${localProperties.getProperty("admobWebViewBannerAdId")}\"")
 
             isMinifyEnabled = false
             proguardFiles(
