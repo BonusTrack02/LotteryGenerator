@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bonustrack02.lotterygenerator.R
-import com.bonustrack02.lotterygenerator.activities.EmptyLotteryBall
-import com.bonustrack02.lotterygenerator.activities.LotteryBall
+import com.bonustrack02.lotterygenerator.ui.components.EmptyLotteryBall
+import com.bonustrack02.lotterygenerator.ui.components.LotteryBall
 
 @Composable
 fun HomeScreen(
