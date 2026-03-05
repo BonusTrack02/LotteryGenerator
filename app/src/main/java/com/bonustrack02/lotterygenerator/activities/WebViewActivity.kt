@@ -22,7 +22,6 @@ import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,14 +32,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import com.bonustrack02.lotterygenerator.BuildConfig
 import com.bonustrack02.lotterygenerator.R
 import com.bonustrack02.lotterygenerator.presentation.webview.WebViewScreen
+import com.bonustrack02.lotterygenerator.ui.components.AdmobBanner
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryGeneratorTheme
-import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -105,7 +102,10 @@ class WebViewActivity : ComponentActivity() {
                                     }
                                 )
                             }
-                            AdmobWebViewBanner()
+                            AdmobBanner(
+                                adSize = AdSize.FULL_BANNER,
+                                adId = BuildConfig.admobWebViewBannerId
+                            )
                         }
                     }
                 ) { innerPadding ->
@@ -118,21 +118,4 @@ class WebViewActivity : ComponentActivity() {
             }
         }
     }
-}
-
-@Composable
-fun AdmobWebViewBanner(modifier: Modifier = Modifier) {
-    AndroidView(
-        modifier = modifier
-            .fillMaxWidth(),
-        factory = { context ->
-            AdView(context).apply {
-                setAdSize(AdSize.FULL_BANNER)
-
-                adUnitId = BuildConfig.admobWebViewBannerId
-
-                loadAd(AdRequest.Builder().build())
-            }
-        }
-    )
 }

@@ -34,20 +34,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.bonustrack02.lotterygenerator.BuildConfig
 import com.bonustrack02.lotterygenerator.R
 import com.bonustrack02.lotterygenerator.presentation.history.HistoryScreen
-import com.bonustrack02.lotterygenerator.presentation.home.AdmobBanner
 import com.bonustrack02.lotterygenerator.presentation.home.HomeScreen
 import com.bonustrack02.lotterygenerator.presentation.navigation.BottomNavItem
 import com.bonustrack02.lotterygenerator.presentation.navigation.Screen
 import com.bonustrack02.lotterygenerator.presentation.navigation.bottomNavItems
 import com.bonustrack02.lotterygenerator.presentation.settings.SettingsScreen
+import com.bonustrack02.lotterygenerator.ui.components.AdmobBanner
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryBlue
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryGeneratorTheme
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryGray
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryGreen
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryRed
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryYellow
+import com.google.android.gms.ads.AdSize
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -83,7 +85,8 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             AdmobBanner(
-                                modifier = Modifier.fillMaxWidth()
+                                adSize = AdSize.BANNER,
+                                adId = BuildConfig.admobBannerId
                             )
                             HorizontalDivider(
                                 color = Color.Gray,
