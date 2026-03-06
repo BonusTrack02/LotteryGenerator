@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bonustrack02.domain.model.SortType
 import com.bonustrack02.domain.usecase.DeleteGenerationHistoryUseCase
-import com.bonustrack02.domain.usecase.GetGenerationHistoryUseCase
+import com.bonustrack02.domain.usecase.GetAllGenerationHistoryUseCase
 import com.bonustrack02.domain.usecase.SaveLotteryTicketImageUseCase
 import com.bonustrack02.domain.usecase.ShareLotteryTicketImageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
-    private val getGenerationHistoryUseCase: GetGenerationHistoryUseCase,
+    private val getAllGenerationHistoryUseCase: GetAllGenerationHistoryUseCase,
     private val deleteGenerationHistoryUseCase: DeleteGenerationHistoryUseCase,
     private val saveLotteryTicketImageUseCase: SaveLotteryTicketImageUseCase,
     private val shareLotteryTicketImageUseCase: ShareLotteryTicketImageUseCase
@@ -40,7 +40,7 @@ class HistoryViewModel @Inject constructor(
 
     private fun loadHistories() {
         viewModelScope.launch {
-            getGenerationHistoryUseCase().collect { originalList ->
+            getAllGenerationHistoryUseCase().collect { originalList ->
                 _uiState.update { currentState ->
                     val sortedList = when (currentState.sortType) {
                         SortType.NEWEST -> originalList.sortedByDescending { it.id }

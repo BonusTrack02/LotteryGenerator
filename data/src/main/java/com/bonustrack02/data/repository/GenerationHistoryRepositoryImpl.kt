@@ -42,4 +42,8 @@ class GenerationHistoryRepositoryImpl @Inject constructor(
     override suspend fun clearGenerationHistoryTable() {
         dao.deleteAllGenerationHistory()
     }
+
+    override suspend fun getGenerationHistory(id: Int): GenerationHistory? {
+        return dao.getGenerationHistory(id)?.toModel()
+    }
 }
