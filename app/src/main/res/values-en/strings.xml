@@ -23,4 +23,5 @@
     <string name="share_number_set_image">Share as a image</string>
     <string name="share_number_set_title">Share lottery number set</string>
     <string name="share_image_datetime">Publication Date: %s</string>
+    <string name="go_to_purchase">Buy Now</string>
 </resources>

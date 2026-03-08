@@ -16,16 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bonustrack02.lotterygenerator.BuildConfig
-import com.bonustrack02.lotterygenerator.EmptyLotteryBall
-import com.bonustrack02.lotterygenerator.LotteryBall
 import com.bonustrack02.lotterygenerator.R
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
+import com.bonustrack02.lotterygenerator.ui.components.EmptyLotteryBall
+import com.bonustrack02.lotterygenerator.ui.components.LotteryBall
 
 @Composable
 fun HomeScreen(
@@ -88,21 +83,4 @@ fun RandomNumberBallsWithButton(
             Text(stringResource(R.string.generate_new_number_set))
         }
     }
-}
-
-@Composable
-fun AdmobBanner(modifier: Modifier = Modifier) {
-    AndroidView(
-        modifier = modifier
-            .fillMaxWidth(),
-        factory = { context ->
-            AdView(context).apply {
-                setAdSize(AdSize.BANNER)
-
-                adUnitId = BuildConfig.admobBannerId
-
-                loadAd(AdRequest.Builder().build())
-            }
-        }
-    )
 }

@@ -2,12 +2,13 @@ package com.bonustrack02.domain.usecase
 
 import com.bonustrack02.domain.model.GenerationHistory
 import com.bonustrack02.domain.repository.GenerationHistoryRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetGenerationHistoryUseCase @Inject constructor(
+class GetAllGenerationHistoryUseCase @Inject constructor(
     private val repository: GenerationHistoryRepository
 ) {
-    suspend operator fun invoke(id: Int): GenerationHistory? {
-        return repository.getGenerationHistory(id)
+    operator fun invoke(): Flow<List<GenerationHistory>> {
+        return repository.getGenerationHistoryStream()
     }
 }

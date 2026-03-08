@@ -20,4 +20,7 @@ interface GenerationHistoryDao {
 
     @Query("SELECT * FROM generation_history ORDER BY id DESC")
     fun getAll(): Flow<List<GenerationHistoryEntity>>
+
+    @Query("SELECT * FROM generation_history WHERE id = :id")
+    suspend fun getGenerationHistory(id: Int): GenerationHistoryEntity?
 }
