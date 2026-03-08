@@ -32,6 +32,7 @@ import com.bonustrack02.lotterygenerator.presentation.history.HistoryScreen
 import com.bonustrack02.lotterygenerator.presentation.home.HomeScreen
 import com.bonustrack02.lotterygenerator.presentation.navigation.BottomNavItem
 import com.bonustrack02.lotterygenerator.presentation.navigation.Screen
+import com.bonustrack02.lotterygenerator.presentation.navigation.WebViewRoute
 import com.bonustrack02.lotterygenerator.presentation.navigation.bottomNavItems
 import com.bonustrack02.lotterygenerator.presentation.settings.SettingsScreen
 import com.bonustrack02.lotterygenerator.ui.components.AdmobBanner
@@ -114,12 +115,12 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable(Screen.Home.route) { HomeScreen() }
                         composable(Screen.History.route) { HistoryScreen(
-                            onNavigateToPurchase = {
-                                navController.navigate(Screen.WebView.route)
+                            onNavigateToPurchase = { historyId ->
+                                navController.navigate(WebViewRoute(historyId))
                             }
                         ) }
                         composable(Screen.Settings.route) { SettingsScreen() }
-                        activity(Screen.WebView.route) {
+                        activity<WebViewRoute> {
                             activityClass = WebViewActivity::class
                         }
                     }

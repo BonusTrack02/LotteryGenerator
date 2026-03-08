@@ -48,60 +48,12 @@ class WebViewActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LotteryGeneratorTheme {
-                var showLotteryNumbers by remember { mutableStateOf(true) }
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize()
                         .safeDrawingPadding(),
                     bottomBar = {
                         Column {
-                            if (showLotteryNumbers) {
-                                val dismissState = rememberSwipeToDismissBoxState()
-
-                                LaunchedEffect(dismissState.currentValue) {
-                                    if (dismissState.currentValue == SwipeToDismissBoxValue.EndToStart ||
-                                        dismissState.currentValue == SwipeToDismissBoxValue.StartToEnd
-                                    ) {
-                                        showLotteryNumbers = false
-                                    }
-                                }
-
-                                SwipeToDismissBox(
-                                    state = dismissState,
-                                    backgroundContent = {
-                                        val isSwiping = dismissState.targetValue != SwipeToDismissBoxValue.Settled
-                                        val color = if (isSwiping) Color.Red else Color.Transparent
-
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(horizontal = 8.dp, vertical = 4.dp)
-                                                .background(color, shape = MaterialTheme.shapes.medium)
-                                                .padding(16.dp),
-                                            contentAlignment = Alignment.CenterEnd
-                                        ) {
-                                            if (isSwiping) {
-                                                Icon(
-                                                    Icons.Default.Delete,
-                                                    contentDescription = stringResource(R.string.delete),
-                                                    tint = MaterialTheme.colorScheme.onSurface)
-                                            }
-                                        }
-                                    },
-                                    content = {
-                                        Card(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(horizontal = 8.dp, vertical = 4.dp),
-                                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                                        ) {
-                                            Text(
-                                                text = "1,2,3,4,5,6",
-                                            )
-                                        }
-                                    }
-                                )
-                            }
                             AdmobBanner(
                                 adSize = AdSize.FULL_BANNER,
                                 adId = BuildConfig.admobWebViewBannerId

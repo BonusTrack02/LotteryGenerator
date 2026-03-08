@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 val localProperties = Properties()
@@ -101,6 +102,7 @@ dependencies {
     implementation(libs.play.services.ads)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

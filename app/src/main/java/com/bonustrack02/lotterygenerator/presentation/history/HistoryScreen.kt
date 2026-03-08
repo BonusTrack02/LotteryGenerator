@@ -69,7 +69,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun HistoryScreen(
     viewModel: HistoryViewModel = hiltViewModel(),
-    onNavigateToPurchase: () -> Unit
+    onNavigateToPurchase: (historyId: Int?) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -210,7 +210,7 @@ fun HistoryScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            onNavigateToPurchase()
+                            onNavigateToPurchase(selectedHistoryId)
                             showBottomSheet = false
                         }
                         .padding(horizontal = 24.dp, vertical = 16.dp),
