@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 val localProperties = Properties()
@@ -24,8 +25,8 @@ android {
         applicationId = "com.bonustrack02.lotterygenerator"
         minSdk = 28
         targetSdk = 36
-        versionCode = 11
-        versionName = "2.6.0"
+        versionCode = 12
+        versionName = "2.7.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,6 +40,7 @@ android {
             manifestPlaceholders["admobApplicationId"] = localProperties.getProperty("debugAdmobApplicationId") ?: ""
             buildConfigField("String", "admobBannerId", "\"${localProperties.getProperty("debugAdmobBannerAdId")}\"")
             buildConfigField("String", "admobNativeId", "\"${localProperties.getProperty("debugAdmobNativeAdId")}\"")
+            buildConfigField("String", "admobWebViewBannerId", "\"${localProperties.getProperty("debugAdmobWebViewBannerAdId")}\"")
 
             isMinifyEnabled = false
             proguardFiles(
@@ -50,6 +52,7 @@ android {
             manifestPlaceholders["admobApplicationId"] = localProperties.getProperty("admobApplicationId") ?: ""
             buildConfigField("String", "admobBannerId", "\"${localProperties.getProperty("admobBannerAdId")}\"")
             buildConfigField("String", "admobNativeId", "\"${localProperties.getProperty("admobNativeAdId")}\"")
+            buildConfigField("String", "admobWebViewBannerId", "\"${localProperties.getProperty("admobWebViewBannerAdId")}\"")
 
             isMinifyEnabled = false
             proguardFiles(
@@ -84,6 +87,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.icons.core)
+    implementation(libs.androidx.icons.extended)
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -98,6 +102,7 @@ dependencies {
     implementation(libs.play.services.ads)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

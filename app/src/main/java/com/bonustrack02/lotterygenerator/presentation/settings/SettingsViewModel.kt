@@ -11,10 +11,10 @@ import com.bonustrack02.domain.usecase.SaveAlarmUseCase
 import com.bonustrack02.lotterygenerator.BuildConfig
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.nativead.NativeAd
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,11 +25,8 @@ class SettingsViewModel @Inject constructor(
     private val saveAlarmUseCase: SaveAlarmUseCase,
     private val cancelAlarmUseCase: CancelAlarmUseCase,
 ) : ViewModel() {
-    private val _nativeAdState = MutableStateFlow<NativeAd?>(null)
-    val nativeAdState = _nativeAdState.asStateFlow()
-
-    private val _alarmState = MutableStateFlow<AlarmTime?>(null)
-    val alarmState = _alarmState.asStateFlow()
+    private val _uiState = MutableStateFlow(SettingsUiState())
+    val uiState = _uiState.asStateFlow()
 
     init {
         fetchAlarmStatus()
@@ -37,7 +34,9 @@ class SettingsViewModel @Inject constructor(
 
     fun loadNativeAd(context: Context) {
         val adLoader = AdLoader.Builder(context, BuildConfig.admobNativeId).forNativeAd { ad ->
-            viewModelScope.launch { _nativeAdState.value = ad }
+            viewModelScope.launch {
+                _uiState.update { it.copy(nativeAd = ad) }
+            }
         }.build()
         adLoader.loadAd(AdRequest.Builder().build())
     }
@@ -50,7 +49,8 @@ class SettingsViewModel @Inject constructor(
 
     private fun fetchAlarmStatus() {
         viewModelScope.launch {
-            _alarmState.value = getAlarmUseCase()
+            val savedAlarm = getAlarmUseCase()
+            _uiState.update { it.copy(alarmState = savedAlarm) }
         }
     }
 
@@ -58,14 +58,14 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             val newTime = AlarmTime(hour)
             saveAlarmUseCase(hour)
-            _alarmState.value = newTime
+            _uiState.update { it.copy(alarmState = newTime) }
         }
     }
 
     fun cancelAlarm() {
         viewModelScope.launch {
             cancelAlarmUseCase()
-            _alarmState.value = null
+            _uiState.update { it.copy(alarmState = null) }
         }
     }
 }

@@ -11,4 +11,6 @@ interface GenerationHistoryRepository {
     fun getGenerationHistoryStream(): Flow<List<GenerationHistory>>
 
     suspend fun clearGenerationHistoryTable()
+
+    suspend fun getGenerationHistory(id: Int): GenerationHistory?
 }

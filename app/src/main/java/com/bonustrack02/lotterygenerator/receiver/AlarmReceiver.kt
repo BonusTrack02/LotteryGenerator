@@ -9,7 +9,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.bonustrack02.domain.repository.AlarmRepository
 import com.bonustrack02.domain.usecase.RescheduleAlarmUseCase
-import com.bonustrack02.lotterygenerator.MainActivity
+import com.bonustrack02.lotterygenerator.activities.MainActivity
 import com.bonustrack02.lotterygenerator.R
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope

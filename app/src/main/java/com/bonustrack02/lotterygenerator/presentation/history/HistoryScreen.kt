@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Web
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -57,8 +58,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bonustrack02.domain.model.GenerationHistory
 import com.bonustrack02.domain.model.SortType
-import com.bonustrack02.lotterygenerator.LotteryBall
 import com.bonustrack02.lotterygenerator.R
+import com.bonustrack02.lotterygenerator.ui.components.LotteryBall
 import com.bonustrack02.lotterygenerator.util.ShareUtils
 import java.time.Instant
 import java.time.ZoneId
@@ -67,7 +68,8 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
-    viewModel: HistoryViewModel = hiltViewModel()
+    viewModel: HistoryViewModel = hiltViewModel(),
+    onNavigateToPurchase: (historyId: Int?) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -204,6 +206,27 @@ fun HistoryScreen(
                     .fillMaxWidth()
                     .padding(bottom = 48.dp)
             ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onNavigateToPurchase(selectedHistoryId)
+                            showBottomSheet = false
+                        }
+                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Web,
+                        contentDescription = stringResource(R.string.go_to_purchase),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = stringResource(R.string.go_to_purchase),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
