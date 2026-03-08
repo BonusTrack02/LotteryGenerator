@@ -21,10 +21,16 @@ import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -72,19 +78,26 @@ fun WebViewScreen(
         }
 
         uiState.selectedNumbers?.let { numbers ->
-            val dismissState = rememberSwipeToDismissBoxState(
-                confirmValueChange = { dismissValue ->
-                    if (dismissValue != SwipeToDismissBoxValue.Settled) {
-                        viewModel.dismissNumberBanner()
-                        true
-                    } else {
-                        false
-                    }
+            var isFingerDown by remember { mutableStateOf(false) }
+            val dismissState = rememberSwipeToDismissBoxState()
+
+            LaunchedEffect(isFingerDown, dismissState.targetValue) {
+                if (!isFingerDown && dismissState.targetValue != SwipeToDismissBoxValue.Settled) {
+                    viewModel.dismissNumberBanner()
                 }
-            )
+            }
 
             SwipeToDismissBox(
                 state = dismissState,
+                enableDismissFromStartToEnd = false,
+                modifier = Modifier.pointerInput(Unit) {
+                    awaitPointerEventScope {
+                        while (true) {
+                            val event = awaitPointerEvent(PointerEventPass.Initial)
+                            isFingerDown = event.changes.any { it.pressed }
+                        }
+                    }
+                },
                 backgroundContent = {
                     Box(
                         modifier = Modifier
