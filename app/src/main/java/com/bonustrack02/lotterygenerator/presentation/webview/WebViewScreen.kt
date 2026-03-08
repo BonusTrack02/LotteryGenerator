@@ -2,6 +2,11 @@ package com.bonustrack02.lotterygenerator.presentation.webview
 
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -36,6 +42,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bonustrack02.lotterygenerator.ui.components.LotteryBall
+import kotlinx.coroutines.delay
 
 @Composable
 fun WebViewScreen(
@@ -78,6 +85,25 @@ fun WebViewScreen(
         }
 
         uiState.selectedNumbers?.let { numbers ->
+            val hintOffset = remember { Animatable(0f) }
+
+            LaunchedEffect(Unit) {
+                delay(500)
+
+                hintOffset.animateTo(
+                    targetValue = -40f,
+                    animationSpec = tween(durationMillis = 1000, easing = FastOutLinearInEasing)
+                )
+
+                hintOffset.animateTo(
+                    targetValue = 0f,
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioNoBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                )
+            }
+
             var isFingerDown by remember { mutableStateOf(false) }
             val dismissState = rememberSwipeToDismissBoxState()
 
@@ -118,7 +144,8 @@ fun WebViewScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
+                            .padding(8.dp)
+                            .offset(x = hintOffset.value.dp),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.surfaceVariant
