@@ -2,14 +2,17 @@ package com.bonustrack02.lotterygenerator.presentation.navigation
 
 import kotlinx.serialization.Serializable
 
-@Serializable
-data object HomeRoute
-@Serializable
-data object HistoryRoute
-@Serializable
-data object SettingsRoute
 
 @Serializable
-data class WebViewRoute(
-    val historyId: Int? = null
-)
+sealed interface Route {
+    @Serializable
+    data object Home : Route
+    @Serializable
+    data object History : Route
+    @Serializable
+    data object Settings : Route
+    @Serializable
+    data class WebView(
+        val historyId: Int? = null
+    ) : Route
+}

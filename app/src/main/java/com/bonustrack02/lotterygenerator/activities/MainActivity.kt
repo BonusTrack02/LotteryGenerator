@@ -34,10 +34,7 @@ import com.bonustrack02.lotterygenerator.R
 import com.bonustrack02.lotterygenerator.presentation.history.HistoryScreen
 import com.bonustrack02.lotterygenerator.presentation.home.HomeScreen
 import com.bonustrack02.lotterygenerator.presentation.navigation.BottomNavItem
-import com.bonustrack02.lotterygenerator.presentation.navigation.HistoryRoute
-import com.bonustrack02.lotterygenerator.presentation.navigation.HomeRoute
-import com.bonustrack02.lotterygenerator.presentation.navigation.SettingsRoute
-import com.bonustrack02.lotterygenerator.presentation.navigation.WebViewRoute
+import com.bonustrack02.lotterygenerator.presentation.navigation.Route
 import com.bonustrack02.lotterygenerator.presentation.settings.SettingsScreen
 import com.bonustrack02.lotterygenerator.ui.components.AdmobBanner
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryGeneratorTheme
@@ -63,9 +60,17 @@ class MainActivity : ComponentActivity() {
                             title = {
                                 Text(
                                     text = when {
-                                        currentDestination?.hasRoute(HomeRoute::class)==true -> stringResource(R.string.bottom_nav_home)
-                                        currentDestination?.hasRoute(HistoryRoute::class)==true -> stringResource(R.string.bottom_nav_history)
-                                        currentDestination?.hasRoute(SettingsRoute::class)==true -> stringResource(R.string.bottom_nav_settings)
+                                        currentDestination?.hasRoute(Route.Home::class) == true -> stringResource(
+                                            R.string.bottom_nav_home
+                                        )
+
+                                        currentDestination?.hasRoute(Route.History::class) == true -> stringResource(
+                                            R.string.bottom_nav_history
+                                        )
+
+                                        currentDestination?.hasRoute(Route.Settings::class) == true -> stringResource(
+                                            R.string.bottom_nav_settings
+                                        )
                                         else -> ""
                                     }
                                 )
@@ -122,17 +127,17 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = HomeRoute,
+                        startDestination = Route.Home,
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable<HomeRoute> { HomeScreen() }
-                        composable<HistoryRoute> { HistoryScreen(
+                        composable<Route.Home> { HomeScreen() }
+                        composable<Route.History> { HistoryScreen(
                             onNavigateToPurchase = { historyId ->
-                                navController.navigate(WebViewRoute(historyId))
+                                navController.navigate(Route.WebView(historyId))
                             }
                         ) }
-                        composable<SettingsRoute> { SettingsScreen() }
-                        activity<WebViewRoute> {
+                        composable<Route.Settings> { SettingsScreen() }
+                        activity<Route.WebView> {
                             activityClass = WebViewActivity::class
                         }
                     }
