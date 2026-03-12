@@ -21,6 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,9 +34,7 @@ import com.bonustrack02.lotterygenerator.R
 import com.bonustrack02.lotterygenerator.presentation.history.HistoryScreen
 import com.bonustrack02.lotterygenerator.presentation.home.HomeScreen
 import com.bonustrack02.lotterygenerator.presentation.navigation.BottomNavItem
-import com.bonustrack02.lotterygenerator.presentation.navigation.Screen
-import com.bonustrack02.lotterygenerator.presentation.navigation.WebViewRoute
-import com.bonustrack02.lotterygenerator.presentation.navigation.bottomNavItems
+import com.bonustrack02.lotterygenerator.presentation.navigation.Route
 import com.bonustrack02.lotterygenerator.presentation.settings.SettingsScreen
 import com.bonustrack02.lotterygenerator.ui.components.AdmobBanner
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryGeneratorTheme
@@ -51,17 +52,25 @@ class MainActivity : ComponentActivity() {
             LotteryGeneratorTheme {
                 val navController = rememberNavController()
                 val navBackStackEntry = navController.currentBackStackEntryAsState().value
-                val currentRoute = navBackStackEntry?.destination?.route
+                val currentDestination = navBackStackEntry?.destination
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopAppBar(
                             title = {
                                 Text(
-                                    text = when (currentRoute) {
-                                        BottomNavItem.Home.route -> stringResource(R.string.bottom_nav_home)
-                                        BottomNavItem.History.route -> stringResource(R.string.bottom_nav_history)
-                                        BottomNavItem.Settings.route -> stringResource(R.string.bottom_nav_settings)
+                                    text = when {
+                                        currentDestination?.hasRoute(Route.Home::class) == true -> stringResource(
+                                            R.string.bottom_nav_home
+                                        )
+
+                                        currentDestination?.hasRoute(Route.History::class) == true -> stringResource(
+                                            R.string.bottom_nav_history
+                                        )
+
+                                        currentDestination?.hasRoute(Route.Settings::class) == true -> stringResource(
+                                            R.string.bottom_nav_settings
+                                        )
                                         else -> ""
                                     }
                                 )
@@ -81,27 +90,35 @@ class MainActivity : ComponentActivity() {
                                 thickness = 1.dp
                             )
                             NavigationBar {
-                                bottomNavItems.forEach { item ->
+                                val screens = listOf(
+                                    BottomNavItem.Home,
+                                    BottomNavItem.History,
+                                    BottomNavItem.Settings
+                                )
+                                screens.forEach { screen ->
+                                    val isSelected = currentDestination?.hierarchy?.any {
+                                        it.hasRoute(screen.route::class)
+                                    } == true
                                     NavigationBarItem(
-                                        selected = currentRoute == item.route,
+                                        selected = isSelected,
                                         onClick = {
-                                            if (currentRoute != item.route) {
-                                                navController.navigate(item.route) {
-                                                    popUpTo(navController.graph.startDestinationId) {
-                                                        saveState = true
-                                                    }
-                                                    launchSingleTop = true
-                                                    restoreState = true
+                                            navController.navigate(screen.route) {
+                                                popUpTo(navController.graph.findStartDestination().id) {
+                                                    saveState = true
                                                 }
+                                                launchSingleTop = true
+                                                restoreState = true
                                             }
                                         },
                                         icon = {
                                             Icon(
-                                                painter = painterResource(item.icon),
-                                                contentDescription = stringResource(item.label)
+                                                painter = painterResource(screen.icon),
+                                                contentDescription = stringResource(screen.label)
                                             )
                                         },
-                                        label = { Text(stringResource(item.label)) }
+                                        label = {
+                                            Text(stringResource(screen.label))
+                                        }
                                     )
                                 }
                             }
@@ -110,17 +127,17 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.Home.route,
+                        startDestination = Route.Home,
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable(Screen.Home.route) { HomeScreen() }
-                        composable(Screen.History.route) { HistoryScreen(
+                        composable<Route.Home> { HomeScreen() }
+                        composable<Route.History> { HistoryScreen(
                             onNavigateToPurchase = { historyId ->
-                                navController.navigate(WebViewRoute(historyId))
+                                navController.navigate(Route.WebView(historyId))
                             }
                         ) }
-                        composable(Screen.Settings.route) { SettingsScreen() }
-                        activity<WebViewRoute> {
+                        composable<Route.Settings> { SettingsScreen() }
+                        activity<Route.WebView> {
                             activityClass = WebViewActivity::class
                         }
                     }

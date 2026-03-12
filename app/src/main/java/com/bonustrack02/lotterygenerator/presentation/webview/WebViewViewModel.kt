@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.bonustrack02.domain.usecase.GetGenerationHistoryUseCase
 import com.bonustrack02.domain.usecase.GetPurchaseUrlUseCase
-import com.bonustrack02.lotterygenerator.presentation.navigation.WebViewRoute
+import com.bonustrack02.lotterygenerator.presentation.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +27,7 @@ class WebViewViewModel @Inject constructor(
     init {
         _uiState.update { it.copy(url = getPurchaseUrlUseCase()) }
 
-        val route = savedStateHandle.toRoute<WebViewRoute>()
+        val route = savedStateHandle.toRoute<Route.WebView>()
         if (route.historyId != null) {
             viewModelScope.launch {
                 getGenerationHistoryUseCase(route.historyId)?.run {
