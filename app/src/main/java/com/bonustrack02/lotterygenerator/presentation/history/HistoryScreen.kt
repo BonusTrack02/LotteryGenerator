@@ -178,7 +178,7 @@ fun HistoryScreen(
             ) { history ->
                 GenerationHistoryItem(
                     history = history,
-                    onLongClick = { id ->
+                    onClick = { id ->
                         selectedHistoryId = id
                         showBottomSheet = true
                     },
@@ -279,7 +279,7 @@ fun HistoryScreen(
 @Composable
 fun GenerationHistoryItem(
     history: GenerationHistory,
-    onLongClick: (Int) -> Unit,
+    onClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val haptics = LocalHapticFeedback.current
@@ -296,10 +296,14 @@ fun GenerationHistoryItem(
                 .fillMaxWidth()
                 .padding(vertical = 4.dp, horizontal = 8.dp)
                 .clip(cardShape)
-                .combinedClickable(onClick = {}, onLongClick = {
-                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onLongClick(history.id)
-                }),
+                .combinedClickable(
+                    onClick = {
+                        onClick(history.id)
+                    },
+                    onLongClick = {
+//                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    }
+                ),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
