@@ -49,9 +49,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -178,7 +179,7 @@ fun HistoryScreen(
             ) { history ->
                 GenerationHistoryItem(
                     history = history,
-                    onLongClick = { id ->
+                    onClick = { id ->
                         selectedHistoryId = id
                         showBottomSheet = true
                     },
@@ -279,13 +280,16 @@ fun HistoryScreen(
 @Composable
 fun GenerationHistoryItem(
     history: GenerationHistory,
-    onLongClick: (Int) -> Unit,
+    onClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val haptics = LocalHapticFeedback.current
     val cardShape = RoundedCornerShape(12.dp)
-    val configuration = LocalConfiguration.current
-    val isWideScreen = configuration.screenWidthDp > 600
+    val windowInfo = LocalWindowInfo.current
+    val density = LocalDensity.current
+    val isWideScreen = with(density) {
+        windowInfo.containerSize.width.toDp() > 600.dp
+    }
     val ballHorizontalArrangement =
         if (isWideScreen) Arrangement.spacedBy(8.dp) else Arrangement.SpaceAround
 
@@ -296,10 +300,14 @@ fun GenerationHistoryItem(
                 .fillMaxWidth()
                 .padding(vertical = 4.dp, horizontal = 8.dp)
                 .clip(cardShape)
-                .combinedClickable(onClick = {}, onLongClick = {
-                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onLongClick(history.id)
-                }),
+                .combinedClickable(
+                    onClick = {
+                        onClick(history.id)
+                    },
+                    onLongClick = {
+//                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    }
+                ),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
