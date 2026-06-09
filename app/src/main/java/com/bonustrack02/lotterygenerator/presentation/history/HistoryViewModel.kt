@@ -110,4 +110,45 @@ class HistoryViewModel @Inject constructor(
     fun onShareRequestConsumed() {
         _uiState.update { it.copy(shareRequest = null) }
     }
+
+    fun enterEditMode(id: Int) {
+        _uiState.update { it.copy(isEditMode = true, selectedIds = setOf(id)) }
+    }
+
+    fun exitEditMode() {
+        _uiState.update { it.copy(isEditMode = false, selectedIds = emptySet()) }
+    }
+
+    fun toggleSelection(id: Int) {
+        _uiState.update { state ->
+            val selectedItem = if (state.selectedIds.contains(id)) {
+                state.selectedIds - id
+            } else {
+                state.selectedIds + id
+            }
+            state.copy(selectedIds = selectedItem)
+        }
+    }
+
+    fun toggleSelectAll() {
+        _uiState.update { state ->
+            if (state.selectedIds.size == state.histories.size) {
+                state.copy(selectedIds = emptySet())
+            } else {
+                val allIds = state.histories.map { it.id }.toSet()
+                state.copy(selectedIds = allIds)
+            }
+        }
+    }
+
+    fun deleteSelectedItems() {
+        val idsToDelete = uiState.value.selectedIds.toList()
+        if (idsToDelete.isEmpty()) return
+
+        viewModelScope.launch {
+
+
+            exitEditMode()
+        }
+    }
 }
