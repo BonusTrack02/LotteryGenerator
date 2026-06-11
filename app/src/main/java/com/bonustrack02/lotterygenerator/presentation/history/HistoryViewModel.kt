@@ -146,7 +146,9 @@ class HistoryViewModel @Inject constructor(
         if (idsToDelete.isEmpty()) return
 
         viewModelScope.launch {
-
+            idsToDelete.forEach { id ->
+                deleteGenerationHistoryUseCase(id)
+            }
 
             exitEditMode()
         }
