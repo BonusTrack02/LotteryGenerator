@@ -356,8 +356,7 @@ fun GenerationHistoryItem(
 ) {
     val haptics = LocalHapticFeedback.current
     val cardShape = RoundedCornerShape(12.dp)
-    val containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.White
-    val borderColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
+    val containerColor = if (isSelected) MaterialTheme.colorScheme.secondaryContainer else Color.White
     val windowInfo = LocalWindowInfo.current
     val density = LocalDensity.current
     val isWideScreen = with(density) {
