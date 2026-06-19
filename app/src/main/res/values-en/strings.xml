@@ -24,4 +24,7 @@
     <string name="share_number_set_title">Share lottery number set</string>
     <string name="share_image_datetime">Publication Date: %s</string>
     <string name="go_to_purchase">Buy Now</string>
+    <string name="history_items_selected">%ditems selected</string>
+    <string name="history_select_all">Select All</string>
+    <string name="history_deselect_all">Deselect All</string>
 </resources>

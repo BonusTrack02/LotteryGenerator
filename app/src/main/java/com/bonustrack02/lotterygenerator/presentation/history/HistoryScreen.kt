@@ -1,6 +1,7 @@
 package com.bonustrack02.lotterygenerator.presentation.history
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,19 +25,26 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Web
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -125,72 +134,131 @@ fun HistoryScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            FilterChip(
-                selected = uiState.sortType == SortType.NEWEST,
-                onClick = { viewModel.updateSortType(SortType.NEWEST) },
-                label = { Text(stringResource(R.string.sort_newest)) },
-                leadingIcon = {
-                    if (uiState.sortType == SortType.NEWEST) {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                }
-            )
+    BackHandler(enabled = uiState.isEditMode) {
+        viewModel.exitEditMode()
+    }
 
-            Spacer(modifier = Modifier.width(8.dp))
-
-            FilterChip(
-                selected = uiState.sortType == SortType.OLDEST,
-                onClick = { viewModel.updateSortType(SortType.OLDEST) },
-                label = { Text(stringResource(R.string.sort_oldest)) },
-                leadingIcon = {
-                    if (uiState.sortType == SortType.OLDEST) {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                }
-            )
-        }
-
-        LazyColumn(
-            state = listState
-        ) {
-            items(
-                items = uiState.histories,
-                key = { it.id }
-            ) { history ->
-                GenerationHistoryItem(
-                    history = history,
-                    onClick = { id ->
-                        selectedHistoryId = id
-                        showBottomSheet = true
+    Scaffold(
+        contentWindowInsets = WindowInsets(0.dp),
+        topBar = {
+            if (uiState.isEditMode) {
+                TopAppBar(
+                    windowInsets = WindowInsets(0.dp),
+                    title = { Text(stringResource(R.string.history_items_selected, uiState.selectedIds.size)) },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = { viewModel.exitEditMode() }
+                        ) {
+                            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.cancel))
+                        }
                     },
-                    modifier = Modifier.animateItem(
-                        fadeOutSpec = tween(durationMillis = 150),
-                        placementSpec = spring(
-                            dampingRatio = Spring.DampingRatioLowBouncy,
-                            stiffness = Spring.StiffnessLow
+                    actions = {
+                        TextButton(
+                            onClick = {
+                                viewModel.toggleSelectAll()
+                            }
+                        ) {
+                            Text(if (uiState.selectedIds.size == uiState.histories.size) stringResource(R.string.history_deselect_all) else stringResource(R.string.history_select_all))
+                        }
+                    }
+                )
+            }
+        },
+        floatingActionButton = {
+            if (uiState.isEditMode && uiState.selectedIds.isNotEmpty()) {
+                FloatingActionButton(
+                    onClick = {
+                        viewModel.deleteSelectedItems()
+                    }
+                ) {
+                    Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete))
+                }
+            }
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            if (!uiState.isEditMode) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp, horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    FilterChip(
+                        selected = uiState.sortType == SortType.NEWEST,
+                        onClick = { viewModel.updateSortType(SortType.NEWEST) },
+                        label = { Text(stringResource(R.string.sort_newest)) },
+                        leadingIcon = {
+                            if (uiState.sortType == SortType.NEWEST) {
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    FilterChip(
+                        selected = uiState.sortType == SortType.OLDEST,
+                        onClick = { viewModel.updateSortType(SortType.OLDEST) },
+                        label = { Text(stringResource(R.string.sort_oldest)) },
+                        leadingIcon = {
+                            if (uiState.sortType == SortType.OLDEST) {
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        }
+                    )
+                }
+            }
+
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(
+                    items = uiState.histories,
+                    key = { it.id }
+                ) { history ->
+                    val isSelected = uiState.selectedIds.contains(history.id)
+
+                    GenerationHistoryItem(
+                        history = history,
+                        isEditMode = uiState.isEditMode,
+                        isSelected = isSelected,
+                        onClick = {
+                            if (uiState.isEditMode) {
+                                viewModel.toggleSelection(history.id)
+                            } else {
+                                selectedHistoryId = history.id
+                                showBottomSheet = true
+                            }
+                        },
+                        onLongClick = {
+                            if (!uiState.isEditMode) {
+                                viewModel.enterEditMode(history.id)
+                            }
+                        },
+                        modifier = Modifier.animateItem(
+                            fadeOutSpec = tween(durationMillis = 150),
+                            placementSpec = spring(
+                                dampingRatio = Spring.DampingRatioLowBouncy,
+                                stiffness = Spring.StiffnessLow
+                            )
                         )
                     )
-                )
+                }
             }
         }
     }
@@ -280,11 +348,15 @@ fun HistoryScreen(
 @Composable
 fun GenerationHistoryItem(
     history: GenerationHistory,
-    onClick: (Int) -> Unit,
+    isEditMode: Boolean,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val haptics = LocalHapticFeedback.current
     val cardShape = RoundedCornerShape(12.dp)
+    val containerColor = if (isSelected) MaterialTheme.colorScheme.secondaryContainer else Color.White
     val windowInfo = LocalWindowInfo.current
     val density = LocalDensity.current
     val isWideScreen = with(density) {
@@ -302,32 +374,46 @@ fun GenerationHistoryItem(
                 .clip(cardShape)
                 .combinedClickable(
                     onClick = {
-                        onClick(history.id)
+                        onClick()
                     },
                     onLongClick = {
-//                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onLongClick()
                     }
                 ),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White)
+            colors = CardDefaults.cardColors(containerColor = containerColor)
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = history.generationTimestamp.toFormattedDateString(),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+                if (isEditMode) {
+                    Checkbox(
+                        checked = isSelected,
+                        onCheckedChange = null,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                }
 
-                FlowRow(
-                    horizontalArrangement = ballHorizontalArrangement,
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth(),
+                Column(
+                    modifier = Modifier.padding(16.dp)
                 ) {
-                    history.numbers.forEach { number ->
-                        LotteryBall(number = number)
+                    Text(
+                        text = history.generationTimestamp.toFormattedDateString(),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+
+                    FlowRow(
+                        horizontalArrangement = ballHorizontalArrangement,
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        history.numbers.forEach { number ->
+                            LotteryBall(number = number)
+                        }
                     }
                 }
             }
