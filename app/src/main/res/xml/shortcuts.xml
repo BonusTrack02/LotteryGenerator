@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <capability android:name="custom.actions.intent.GENERATE_LOTTO">
+        <app-widget
+            android:targetClass="com.bonustrack02.lotterygenerator.widget.LottoWidgetReceiver"
+            android:targetPackage="com.bonustrack02.lotterygenerator" />
+    </capability>
+
+    <shortcut
+        android:shortcutId="generate_lotto_shortcut"
+        android:shortcutShortLabel="@string/app_name">
+        <capability-binding android:key="custom.actions.intent.GENERATE_LOTTO">
+            <parameter-binding android:key="feature" android:value="@array/lottery_synonyms" />
+        </capability-binding>
+    </shortcut>
+</shortcuts>

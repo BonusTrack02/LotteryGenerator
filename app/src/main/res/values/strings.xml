@@ -23,4 +23,11 @@
     <string name="share_number_set_title">로또 번호 공유하기</string>
     <string name="share_image_datetime">발행일시: %s</string>
     <string name="go_to_purchase">구매하러 가기</string>
+    <string name="history_items_selected">%d개 선택됨</string>
+    <string name="history_select_all">전체 선택</string>
+    <string name="history_deselect_all">전체 선택 해제</string>
+    <string-array name="lottery_synonyms">
+        <item>로또 번호 생성</item>
+        <item>로또 뽑아줘</item>
+    </string-array>
 </resources>
