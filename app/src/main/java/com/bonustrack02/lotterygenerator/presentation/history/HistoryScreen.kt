@@ -144,7 +144,7 @@ fun HistoryScreen(
             if (uiState.isEditMode) {
                 TopAppBar(
                     windowInsets = WindowInsets(0.dp),
-                    title = { Text("${uiState.selectedIds.size}개 선택됨") },
+                    title = { Text(stringResource(R.string.history_items_selected, uiState.selectedIds.size)) },
                     navigationIcon = {
                         IconButton(
                             onClick = { viewModel.exitEditMode() }
@@ -158,7 +158,7 @@ fun HistoryScreen(
                                 viewModel.toggleSelectAll()
                             }
                         ) {
-                            Text(if (uiState.selectedIds.size == uiState.histories.size) "선택 해제" else "전체 선택")
+                            Text(if (uiState.selectedIds.size == uiState.histories.size) stringResource(R.string.history_deselect_all) else stringResource(R.string.history_select_all))
                         }
                     }
                 )
@@ -171,7 +171,7 @@ fun HistoryScreen(
                         viewModel.deleteSelectedItems()
                     }
                 ) {
-                    Icon(Icons.Default.Delete, contentDescription = "선택 삭제")
+                    Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete))
                 }
             }
         }
