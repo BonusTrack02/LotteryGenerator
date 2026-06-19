@@ -8,5 +8,7 @@ data class HistoryUiState(
     val sortType: SortType = SortType.NEWEST,
     val isLoading: Boolean = false,
     val message: String? = null,
-    val shareRequest: GenerationHistory? = null
+    val shareRequest: GenerationHistory? = null,
+    val isEditMode: Boolean = false,
+    val selectedIds: Set<Int> = emptySet(),
 )
