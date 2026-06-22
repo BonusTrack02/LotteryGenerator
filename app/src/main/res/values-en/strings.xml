@@ -27,8 +27,16 @@
     <string name="history_items_selected">%ditems selected</string>
     <string name="history_select_all">Select All</string>
     <string name="history_deselect_all">Deselect All</string>
+
+    <string-array name="lottery_generation_query_patterns">
+        <item>Generate lottery numbers</item>
+        <item>Recommend lottery numbers</item>
+        <item>Pick lottery numbers</item>
+        <item>Create lottery numbers</item>
+    </string-array>
+
     <string-array name="lottery_synonyms">
-        <item>lottery numbers generation</item>
-        <item>generate lottery numbers</item>
+        <item>Generate lottery numbers</item>
+        <item>Recommend lottery numbers</item>
     </string-array>
 </resources>

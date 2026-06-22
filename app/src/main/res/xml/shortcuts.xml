@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <capability android:name="custom.actions.intent.GENERATE_LOTTO">
+    <capability
+        android:name="custom.actions.intent.GENERATE_LOTTO"
+        app:queryPatterns="@array/lottery_generation_query_patterns">
+
         <app-widget
+            android:identifier="LOTTERY_WIDGET"
             android:targetClass="com.bonustrack02.lotterygenerator.widget.LottoWidgetReceiver"
             android:targetPackage="com.bonustrack02.lotterygenerator" />
     </capability>

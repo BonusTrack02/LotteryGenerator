@@ -26,8 +26,16 @@
     <string name="history_items_selected">%d개 선택됨</string>
     <string name="history_select_all">전체 선택</string>
     <string name="history_deselect_all">전체 선택 해제</string>
+
+    <string-array name="lottery_generation_query_patterns">
+        <item>로또 번호 생성해줘</item>
+        <item>로또 번호 추천해줘</item>
+        <item>로또 번호 뽑아줘</item>
+        <item>로또 번호 만들어줘</item>
+    </string-array>
+
     <string-array name="lottery_synonyms">
         <item>로또 번호 생성</item>
-        <item>로또 뽑아줘</item>
+        <item>로또 번호 추천</item>
     </string-array>
 </resources>
