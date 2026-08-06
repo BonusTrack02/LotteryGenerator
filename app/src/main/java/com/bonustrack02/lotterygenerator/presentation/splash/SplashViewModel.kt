@@ -1,7 +1,6 @@
 package com.bonustrack02.lotterygenerator.presentation.splash
 
 import android.Manifest
-import android.app.AlarmManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -12,8 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,19 +22,25 @@ class SplashViewModel @Inject constructor(
     private val _event = Channel<SplashEvent>()
     val event = _event.receiveAsFlow()
 
-    init {
-        checkPermissions()
-    }
-
     fun checkPermissions() {
         viewModelScope.launch {
-            delay(1000)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            delay(timeMillis = SPLASH_MIN_DURATION_MILLIS)
+            if (
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 _event.send(SplashEvent.RequestNotificationPermission)
             } else {
                 _event.send(SplashEvent.NavigateToMain)
             }
         }
+    }
+
+    private companion object {
+        const val SPLASH_MIN_DURATION_MILLIS = 1_000L
     }
 }
 

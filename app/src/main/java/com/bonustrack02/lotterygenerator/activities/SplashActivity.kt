@@ -28,6 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bonustrack02.lotterygenerator.R
+import com.bonustrack02.lotterygenerator.BuildConfig
+import com.bonustrack02.lotterygenerator.presentation.splash.AppOpenAdEffect
 import com.bonustrack02.lotterygenerator.presentation.splash.SplashEvent
 import com.bonustrack02.lotterygenerator.presentation.splash.SplashViewModel
 import com.bonustrack02.lotterygenerator.ui.theme.LotteryGeneratorTheme
@@ -37,7 +39,6 @@ import kotlinx.coroutines.flow.collectLatest
 @SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
 class SplashActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -61,6 +62,12 @@ class SplashActivity : ComponentActivity() {
         onNavigateToMain: () -> Unit = { navigateToMain() }
     ) {
         val context = LocalContext.current
+
+        AppOpenAdEffect(
+            activity = this@SplashActivity,
+            adUnitId = BuildConfig.admobAppOpenId,
+            onComplete = viewModel::checkPermissions
+        )
 
         val permissionLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission(),
