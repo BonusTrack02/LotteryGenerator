@@ -24,8 +24,8 @@ android {
         applicationId = "com.bonustrack02.lotterygenerator"
         minSdk = 28
         targetSdk = 36
-        versionCode = 15
-        versionName = "2.9.0"
+        versionCode = 17
+        versionName = "2.11.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -40,6 +40,7 @@ android {
             buildConfigField("String", "admobBannerId", "\"${localProperties.getProperty("debugAdmobBannerAdId")}\"")
             buildConfigField("String", "admobNativeId", "\"${localProperties.getProperty("debugAdmobNativeAdId")}\"")
             buildConfigField("String", "admobWebViewBannerId", "\"${localProperties.getProperty("debugAdmobWebViewBannerAdId")}\"")
+            buildConfigField("String", "admobAppOpenId", "\"${localProperties.getProperty("debugAdmobAppOpenAdId")}\"")
 
             isMinifyEnabled = false
             proguardFiles(
@@ -52,6 +53,7 @@ android {
             buildConfigField("String", "admobBannerId", "\"${localProperties.getProperty("admobBannerAdId")}\"")
             buildConfigField("String", "admobNativeId", "\"${localProperties.getProperty("admobNativeAdId")}\"")
             buildConfigField("String", "admobWebViewBannerId", "\"${localProperties.getProperty("admobWebViewBannerAdId")}\"")
+            buildConfigField("String", "admobAppOpenId", "\"${localProperties.getProperty("admobAppOpenAdId")}\"")
 
             isMinifyEnabled = false
             proguardFiles(
