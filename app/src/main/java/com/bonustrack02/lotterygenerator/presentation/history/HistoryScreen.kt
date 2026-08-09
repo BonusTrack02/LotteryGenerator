@@ -107,16 +107,18 @@ fun HistoryScreen(
                 )
             }
 
-            viewModel.processAndShareBitmap(bitmap)
+            viewModel.processAndShareBitmap(
+                bitmap = bitmap,
+                chooserTitle = context.getString(R.string.share_number_set_title)
+            )
 
             viewModel.onShareRequestConsumed()
         }
     }
 
-    if (uiState.message != null) {
-        val message = uiState.message
-        LaunchedEffect(message) {
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    uiState.messageResId?.let { messageResId ->
+        LaunchedEffect(messageResId) {
+            Toast.makeText(context, messageResId, Toast.LENGTH_SHORT).show()
             viewModel.onErrorMessageShown()
         }
     }

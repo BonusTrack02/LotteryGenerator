@@ -37,11 +37,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bonustrack02.lotterygenerator.ui.components.LotteryBall
+import com.bonustrack02.lotterygenerator.R
 import kotlinx.coroutines.delay
 
 @Composable
@@ -135,7 +137,7 @@ fun WebViewScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = "배너 닫기",
+                            contentDescription = stringResource(R.string.close_number_banner),
                             tint = Color.White
                         )
                     }

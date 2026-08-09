@@ -48,6 +48,7 @@ fun GeneratedTicketImage(
 
     val density = LocalDensity.current
     val dateTimeString = stringResource(R.string.share_image_datetime, dateStr)
+    val ticketTitle = stringResource(R.string.ticket_title)
 
     val textPaint = remember {
         Paint().apply {
@@ -109,7 +110,7 @@ fun GeneratedTicketImage(
 
                 textPaint.color = AccentColor.toArgb()
                 canvas.nativeCanvas.drawText(
-                    "LOTTO",
+                    ticketTitle,
                     canvasWidth / 2,
                     titleCenterY,
                     textPaint

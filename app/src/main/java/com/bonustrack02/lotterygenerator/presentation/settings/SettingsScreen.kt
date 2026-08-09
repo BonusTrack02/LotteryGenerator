@@ -205,7 +205,7 @@ fun SettingsScreen(
                                 .background(Color.LightGray.copy(alpha = 0.3f)),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Ad Loading...", fontSize = with(density) { 14.dp.toSp() })
+                            Text(stringResource(R.string.ad_loading), fontSize = with(density) { 14.dp.toSp() })
                         }
                     }
                 }
@@ -270,7 +270,7 @@ fun NativeAdViewComposable(nativeAd: NativeAd) {
             }
 
             val adBadge = TextView(context).apply {
-                text = "Ad"
+                text = context.getString(R.string.ad_badge)
                 textSize = 10f
                 setTextColor(android.graphics.Color.WHITE)
                 setBackgroundColor(android.graphics.Color.parseColor("#FFCC00"))
