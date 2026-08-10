@@ -6,7 +6,7 @@ import javax.inject.Inject
 class ShareLotteryTicketImageUseCase @Inject constructor(
     private val repository: ShareRepository
 ) {
-    suspend operator fun invoke(uriString: String) {
-        repository.shareImage(uriString)
+    suspend operator fun invoke(uriString: String, chooserTitle: String) {
+        repository.shareImage(uriString, chooserTitle)
     }
 }

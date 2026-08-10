@@ -77,7 +77,7 @@ class SplashActivity : ComponentActivity() {
                 } else {
                     Toast.makeText(
                         context,
-                        "알림 권한을 거부하여 알람이 울리지 않을 수 있습니다.",
+                        R.string.notification_permission_denied,
                         Toast.LENGTH_LONG
                     ).show()
 

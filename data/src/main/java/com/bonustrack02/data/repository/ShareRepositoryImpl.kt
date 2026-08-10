@@ -38,7 +38,7 @@ class ShareRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun shareImage(uriString: String) {
+    override suspend fun shareImage(uriString: String, chooserTitle: String) {
         withContext(Dispatchers.Main) {
             val uri = uriString.toUri()
 
@@ -48,7 +48,7 @@ class ShareRepositoryImpl @Inject constructor(
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
 
-            val chooser = Intent.createChooser(intent, "로또 번호 공유하기").apply {
+            val chooser = Intent.createChooser(intent, chooserTitle).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
 

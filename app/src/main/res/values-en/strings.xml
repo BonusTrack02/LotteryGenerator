@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LotteryGenerator</string>
+    <string name="app_name">Lottery Generator</string>
     <string name="app_icon">App Icon</string>
     <string name="generate_new_number_set">Generate a new number set</string>
     <string name="bottom_nav_home">Home</string>
@@ -8,8 +8,8 @@
     <string name="bottom_nav_settings">Settings</string>
     <string name="delete_all_generation_history">Delete all generation history</string>
     <string name="delete_all_generation_history_confirm">Permanently delete all generation history? Continue?</string>
-    <string name="delete">delete</string>
-    <string name="cancel">cancel</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
     <string name="sort_newest">Newest</string>
     <string name="sort_oldest">Oldest</string>
     <string name="scheduled_daily_notification_name">Daily Reminder</string>
@@ -17,14 +17,21 @@
     <string name="settings_notification_use">Use Notification</string>
     <string name="settings_notification_description">Get notifications at a scheduled time every day.</string>
     <string name="notification_time_format">%1$02d:00</string>
-    <string name="save">save</string>
+    <string name="save">Save</string>
     <string name="notification_time">Notification Time</string>
     <string name="select_notification_time">Choose a notification time.</string>
-    <string name="share_number_set_image">Share as a image</string>
+    <string name="share_number_set_image">Share as an image</string>
     <string name="share_number_set_title">Share lottery number set</string>
     <string name="share_image_datetime">Publication Date: %s</string>
     <string name="go_to_purchase">Buy Now</string>
-    <string name="history_items_selected">%ditems selected</string>
+    <string name="history_items_selected">%d items selected</string>
     <string name="history_select_all">Select All</string>
     <string name="history_deselect_all">Deselect All</string>
+    <string name="history_not_found_error">Couldn’t find that history item.</string>
+    <string name="share_error">An error occurred while sharing.</string>
+    <string name="ticket_title">LOTTO</string>
+    <string name="close_number_banner">Close number banner</string>
+    <string name="ad_loading">Loading ad…</string>
+    <string name="ad_badge">Ad</string>
+    <string name="notification_permission_denied">Notifications are disabled, so the alarm may not sound.</string>
 </resources>

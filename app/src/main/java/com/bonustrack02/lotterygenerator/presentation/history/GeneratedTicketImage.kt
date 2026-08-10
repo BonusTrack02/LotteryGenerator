@@ -2,6 +2,7 @@ package com.bonustrack02.lotterygenerator.presentation.history
 
 import android.graphics.Paint
 import android.graphics.Typeface
+import android.text.format.DateFormat
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,16 +20,14 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.bonustrack02.lotterygenerator.R
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 val PaperColor = Color(0xFFFFFDF5)
 val InkColor = Color(0xFF333333)
@@ -40,7 +39,9 @@ fun GeneratedTicketImage(
     timestamp: Long,
     modifier: Modifier = Modifier
 ) {
-    val dateStr = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(
+    val locale = LocalLocale.current.platformLocale
+    val dateTimePattern = DateFormat.getBestDateTimePattern(locale, "yMdHms")
+    val dateStr = SimpleDateFormat(dateTimePattern, locale).format(
         Date(
             timestamp * 1000
         )
@@ -48,6 +49,7 @@ fun GeneratedTicketImage(
 
     val density = LocalDensity.current
     val dateTimeString = stringResource(R.string.share_image_datetime, dateStr)
+    val ticketTitle = stringResource(R.string.ticket_title)
 
     val textPaint = remember {
         Paint().apply {
@@ -62,7 +64,7 @@ fun GeneratedTicketImage(
             color = InkColor.toArgb()
             textAlign = Paint.Align.CENTER
             typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
-            textSize = with(density) { 12.sp.toPx() }
+            textSize = with(density) { 12.dp.toPx() }
         }
     }
 
@@ -102,14 +104,14 @@ fun GeneratedTicketImage(
             )
 
             drawIntoCanvas { canvas ->
-                textPaint.textSize = with(density) { 24.sp.toPx() }
+                textPaint.textSize = with(density) { 24.dp.toPx() }
 
                 val titleOffset = (textPaint.descent() + textPaint.ascent()) / 2
                 val titleCenterY = (titleSectionHeight / 2) - titleOffset
 
                 textPaint.color = AccentColor.toArgb()
                 canvas.nativeCanvas.drawText(
-                    "LOTTO",
+                    ticketTitle,
                     canvasWidth / 2,
                     titleCenterY,
                     textPaint
@@ -148,7 +150,7 @@ fun GeneratedTicketImage(
             val numberPaint = Paint().apply {
                 color = InkColor.toArgb()
                 textAlign = Paint.Align.CENTER
-                textSize = with(density) { 14.sp.toPx() }
+                textSize = with(density) { 14.dp.toPx() }
                 typeface = Typeface.DEFAULT_BOLD
             }
 
