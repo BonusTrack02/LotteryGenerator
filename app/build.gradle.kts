@@ -24,8 +24,8 @@ android {
         applicationId = "com.bonustrack02.lotterygenerator"
         minSdk = 28
         targetSdk = 37
-        versionCode = 17
-        versionName = "2.11.0"
+        versionCode = 18
+        versionName = "2.11.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
