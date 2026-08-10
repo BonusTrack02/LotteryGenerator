@@ -18,14 +18,14 @@ if (localPropertiesFile.exists()) {
 
 android {
     namespace = "com.bonustrack02.lotterygenerator"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.bonustrack02.lotterygenerator"
         minSdk = 28
-        targetSdk = 36
-        versionCode = 17
-        versionName = "2.11.0"
+        targetSdk = 37
+        versionCode = 18
+        versionName = "2.11.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

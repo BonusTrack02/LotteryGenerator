@@ -1,6 +1,7 @@
 package com.bonustrack02.lotterygenerator.presentation.history
 
 import android.graphics.Bitmap
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bonustrack02.domain.model.SortType
@@ -8,6 +9,7 @@ import com.bonustrack02.domain.usecase.DeleteGenerationHistoryUseCase
 import com.bonustrack02.domain.usecase.GetAllGenerationHistoryUseCase
 import com.bonustrack02.domain.usecase.SaveLotteryTicketImageUseCase
 import com.bonustrack02.domain.usecase.ShareLotteryTicketImageUseCase
+import com.bonustrack02.lotterygenerator.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,12 +74,12 @@ class HistoryViewModel @Inject constructor(
             if (history != null) {
                 _uiState.update { it.copy(shareRequest = history) }
             } else {
-                showErrorMessage("에러 발생")
+                showErrorMessage(R.string.history_not_found_error)
             }
         }
     }
 
-    fun processAndShareBitmap(bitmap: Bitmap) {
+    fun processAndShareBitmap(bitmap: Bitmap, chooserTitle: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val stream = ByteArrayOutputStream()
@@ -88,23 +90,23 @@ class HistoryViewModel @Inject constructor(
                 val fileName = "${Instant.now().epochSecond}_ticket"
                 val uriString = saveLotteryTicketImageUseCase(fileName, byteArray)
 
-                shareLotteryTicketImageUseCase(uriString)
+                shareLotteryTicketImageUseCase(uriString, chooserTitle)
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                showErrorMessage("공유 중 오류가 발생했습니다.")
+                showErrorMessage(R.string.share_error)
             } finally {
                 _uiState.update { it.copy(isLoading = false) }
             }
         }
     }
 
-    private fun showErrorMessage(message: String) {
-        _uiState.update { it.copy(message = message) }
+    private fun showErrorMessage(@StringRes messageResId: Int) {
+        _uiState.update { it.copy(messageResId = messageResId) }
     }
 
     fun onErrorMessageShown() {
-        _uiState.update { it.copy(message = null) }
+        _uiState.update { it.copy(messageResId = null) }
     }
 
     fun onShareRequestConsumed() {
