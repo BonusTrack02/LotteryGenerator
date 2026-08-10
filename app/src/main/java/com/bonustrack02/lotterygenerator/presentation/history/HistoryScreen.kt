@@ -61,6 +61,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -71,9 +72,10 @@ import com.bonustrack02.domain.model.SortType
 import com.bonustrack02.lotterygenerator.R
 import com.bonustrack02.lotterygenerator.ui.components.LotteryBall
 import com.bonustrack02.lotterygenerator.util.ShareUtils
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
+import android.text.format.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -356,6 +358,7 @@ fun GenerationHistoryItem(
     onLongClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val locale = LocalLocale.current.platformLocale
     val haptics = LocalHapticFeedback.current
     val cardShape = RoundedCornerShape(12.dp)
     val containerColor = if (isSelected) MaterialTheme.colorScheme.secondaryContainer else Color.White
@@ -402,7 +405,7 @@ fun GenerationHistoryItem(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = history.generationTimestamp.toFormattedDateString(),
+                        text = history.generationTimestamp.toFormattedDateString(locale),
                         style = MaterialTheme.typography.labelMedium,
                         color = Color.Gray,
                         modifier = Modifier.padding(bottom = 8.dp)
@@ -423,9 +426,7 @@ fun GenerationHistoryItem(
     }
 }
 
-fun Long.toFormattedDateString(): String {
-    val instant = Instant.ofEpochSecond(this)
-    val zoneId = ZoneId.systemDefault()
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    return instant.atZone(zoneId).format(formatter)
+fun Long.toFormattedDateString(locale: Locale): String {
+    val dateTimePattern = DateFormat.getBestDateTimePattern(locale, "yMMMdHms")
+    return SimpleDateFormat(dateTimePattern, locale).format(Date(this * 1000))
 }
