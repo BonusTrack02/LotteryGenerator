@@ -1,13 +1,18 @@
-# Google Play internal deployment
+# Google Play deployment
 
-The `Google Play CD` workflow publishes a signed app bundle to the Google Play
-internal testing track when a `*-prod` tag is pushed. It can also be run
-manually from the Actions tab.
+The `Google Play CD` workflow uses the tag suffix to select the deployment:
+
+- `*-beta` builds, signs, and publishes an app bundle to internal testing.
+- `*-prod` promotes the matching internal release to production.
+
+It can also be run manually from the Actions tab. A manual production run
+requires the existing internal `versionCode` to promote.
 
 ## GitHub environment
 
-Create an environment named `google-play-internal`. Add protection rules if a
-manual approval should be required before each deployment.
+Create environments named `google-play-internal` and
+`google-play-production`. Add protection rules if a manual approval should be
+required before a deployment, especially for production.
 
 ## Required secrets
 
@@ -27,6 +32,10 @@ Add these secrets to the `google-play-internal` environment or the repository:
 | `ADMOB_WEBVIEW_BANNER_AD_ID` | Production WebView banner ad unit ID |
 | `ADMOB_APP_OPEN_AD_ID` | Production app-open ad unit ID |
 
+The production environment only needs `PLAY_SERVICE_ACCOUNT_JSON`. When the
+same service account is used for both tracks, this secret can be stored once as
+a repository secret instead of being duplicated across environments.
+
 Encode files as single-line base64 values on macOS:
 
 ```bash
@@ -41,9 +50,12 @@ commit the decoded files or service-account JSON to the repository.
 
 1. Increment `versionCode` and `versionName` in `app/build.gradle.kts`.
 2. Complete the normal Git Flow release into `main`.
-3. Tag the release using the existing format, for example
-   `2.12.0+19-prod`.
-4. Push the tag. The workflow builds, signs, and publishes the app bundle to
-   the internal testing track.
+3. Push a beta tag containing the app version and `versionCode`, for example
+   `2.12.0+19-beta`. The workflow uploads versionCode 19 to internal testing.
+4. After testing that release, push `2.12.0+19-prod`. The workflow extracts
+   versionCode 19 from the tag and promotes that exact internal release to
+   production.
 
-Every Play upload must use a `versionCode` that has not been uploaded before.
+Every beta upload must use a `versionCode` that has not been uploaded before.
+The corresponding production tag must use the same versionCode so that the
+tested artifact is promoted without rebuilding or uploading it again.
