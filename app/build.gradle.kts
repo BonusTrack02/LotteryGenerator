@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.gradle.play.publisher)
 }
 
 val localProperties = Properties()
@@ -15,6 +16,17 @@ val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
     localProperties.load(localPropertiesFile.inputStream())
 }
+
+val signingKeystorePath = providers.environmentVariable("SIGNING_KEYSTORE_PATH").orNull
+val signingStorePassword = providers.environmentVariable("SIGNING_STORE_PASSWORD").orNull
+val signingKeyAlias = providers.environmentVariable("SIGNING_KEY_ALIAS").orNull
+val signingKeyPassword = providers.environmentVariable("SIGNING_KEY_PASSWORD").orNull
+val hasReleaseSigningConfig = listOf(
+    signingKeystorePath,
+    signingStorePassword,
+    signingKeyAlias,
+    signingKeyPassword
+).all { !it.isNullOrBlank() }
 
 android {
     namespace = "com.bonustrack02.lotterygenerator"
@@ -34,6 +46,17 @@ android {
         enableAggregatingTask = false
     }
 
+    signingConfigs {
+        if (hasReleaseSigningConfig) {
+            create("release") {
+                storeFile = file(signingKeystorePath!!)
+                storePassword = signingStorePassword
+                keyAlias = signingKeyAlias
+                keyPassword = signingKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         debug {
             manifestPlaceholders["admobApplicationId"] = localProperties.getProperty("debugAdmobApplicationId") ?: ""
@@ -49,6 +72,10 @@ android {
             )
         }
         release {
+            if (hasReleaseSigningConfig) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+
             manifestPlaceholders["admobApplicationId"] = localProperties.getProperty("admobApplicationId") ?: ""
             buildConfigField("String", "admobBannerId", "\"${localProperties.getProperty("admobBannerAdId")}\"")
             buildConfigField("String", "admobNativeId", "\"${localProperties.getProperty("admobNativeAdId")}\"")
