@@ -1,0 +1,99 @@
+name: Android CI
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+  push:
+    branches:
+      - develop
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Test, lint, and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-provider: basic
+
+      - name: Create CI-only Android configuration
+        shell: bash
+        run: |
+          cat > local.properties <<'PROPERTIES'
+          sdk.dir=/usr/local/lib/android/sdk
+          debugAdmobApplicationId=ca-app-pub-3940256099942544~3347511713
+          debugAdmobBannerAdId=ca-app-pub-3940256099942544/6300978111
+          debugAdmobNativeAdId=ca-app-pub-3940256099942544/2247696110
+          debugAdmobWebViewBannerAdId=ca-app-pub-3940256099942544/6300978111
+          debugAdmobAppOpenAdId=ca-app-pub-3940256099942544/9257395921
+          PROPERTIES
+
+          cat > app/google-services.json <<'JSON'
+          {
+            "project_info": {
+              "project_number": "123456789000",
+              "project_id": "lottery-generator-ci",
+              "storage_bucket": "lottery-generator-ci.appspot.com"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789000:android:0000000000000000",
+                  "android_client_info": {
+                    "package_name": "com.bonustrack02.lotterygenerator"
+                  }
+                },
+                "api_key": [
+                  {
+                    "current_key": "ci-placeholder-key"
+                  }
+                ]
+              }
+            ],
+            "configuration_version": "1"
+          }
+          JSON
+
+      - name: Run unit tests, lint, and debug build
+        run: ./gradlew testDebugUnitTest lintDebug assembleDebug --no-daemon
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: lottery-generator-debug-${{ github.sha }}
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload test and lint reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-reports-${{ github.sha }}
+          path: |
+            **/build/reports/
+            **/build/test-results/
+          if-no-files-found: ignore
+          retention-days: 7

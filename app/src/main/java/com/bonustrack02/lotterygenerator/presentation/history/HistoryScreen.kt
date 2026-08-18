@@ -90,6 +90,7 @@ fun HistoryScreen(
 
     val context = LocalContext.current
     val compositionContext = rememberCompositionContext()
+    val shareChooserTitle = stringResource(R.string.share_number_set_title)
 
     var showBottomSheet by remember { mutableStateOf(false) }
     var selectedHistoryId by remember { mutableStateOf<Int?>(null) }
@@ -111,7 +112,7 @@ fun HistoryScreen(
 
             viewModel.processAndShareBitmap(
                 bitmap = bitmap,
-                chooserTitle = context.getString(R.string.share_number_set_title)
+                chooserTitle = shareChooserTitle
             )
 
             viewModel.onShareRequestConsumed()
