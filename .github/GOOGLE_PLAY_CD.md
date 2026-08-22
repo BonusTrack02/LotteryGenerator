@@ -14,13 +14,29 @@ Create environments named `google-play-internal` and
 `google-play-production`. Add protection rules if a manual approval should be
 required before a deployment, especially for production.
 
+## Google Cloud authentication
+
+The workflow uses GitHub OIDC and Google Cloud Workload Identity Federation to
+obtain short-lived credentials. It does not use a service account JSON key.
+
+Add these repository or environment variables under Actions variables:
+
+| Variable | Value |
+| --- | --- |
+| `GCP_WORKLOAD_IDENTITY_PROVIDER` | Full provider resource name, such as `projects/123456789012/locations/global/workloadIdentityPools/github-actions/providers/lottery-generator` |
+| `GCP_SERVICE_ACCOUNT` | Play publishing service account email |
+
+The Workload Identity Provider must trust this repository, and its principal
+must have `roles/iam.workloadIdentityUser` on the service account. Invite the
+same service account in Google Play Console and grant app-level permissions to
+release to testing tracks and production.
+
 ## Required secrets
 
 Add these secrets to the `google-play-internal` environment or the repository:
 
 | Secret | Value |
 | --- | --- |
-| `PLAY_SERVICE_ACCOUNT_JSON` | Full JSON key for a Play Console service account with release permission |
 | `GOOGLE_SERVICES_JSON_BASE64` | Base64-encoded production `app/google-services.json` |
 | `UPLOAD_KEYSTORE_BASE64` | Base64-encoded Play upload keystore |
 | `UPLOAD_STORE_PASSWORD` | Upload keystore password |
@@ -32,9 +48,9 @@ Add these secrets to the `google-play-internal` environment or the repository:
 | `ADMOB_WEBVIEW_BANNER_AD_ID` | Production WebView banner ad unit ID |
 | `ADMOB_APP_OPEN_AD_ID` | Production app-open ad unit ID |
 
-The production environment only needs `PLAY_SERVICE_ACCOUNT_JSON`. When the
-same service account is used for both tracks, this secret can be stored once as
-a repository secret instead of being duplicated across environments.
+The production environment does not need the build and signing secrets because
+it promotes an existing internal release. It still resolves the two Google
+Cloud variables listed above and can retain approval protection rules.
 
 Encode files as single-line base64 values on macOS:
 
@@ -44,7 +60,8 @@ base64 -i /path/to/upload-keystore.jks | tr -d '\n'
 ```
 
 Store the resulting values directly in the corresponding GitHub secrets. Never
-commit the decoded files or service-account JSON to the repository.
+commit the decoded files or generated Google Cloud credentials to the
+repository.
 
 ## Release flow
 
