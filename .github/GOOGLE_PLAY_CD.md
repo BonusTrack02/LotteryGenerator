@@ -31,6 +31,10 @@ must have `roles/iam.workloadIdentityUser` on the service account. Invite the
 same service account in Google Play Console and grant app-level permissions to
 release to testing tracks and production.
 
+The internal deployment builds the signed bundle before authenticating. GitHub
+OIDC credentials are short-lived, so authentication is intentionally performed
+immediately before the Play API upload.
+
 ## Required secrets
 
 Add these secrets to the `google-play-internal` environment or the repository:
