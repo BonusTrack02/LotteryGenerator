@@ -99,6 +99,10 @@ android {
     }
 }
 
+play {
+    useApplicationDefaultCredentials = true
+}
+
 dependencies {
 
     implementation(project(":domain"))
