@@ -1,0 +1,15 @@
+{
+  "name": "lottery-results",
+  "private": true,
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "seed": "node scripts/seed-draws.js",
+    "sync": "node scripts/sync-draws.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@google-cloud/firestore": "9.4.1"
+  }
+}
