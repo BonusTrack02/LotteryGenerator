@@ -11,3 +11,6 @@ app/build
 local.properties
 
 app/google-services.json
+
+/functions/node_modules/
+/gha-creds-*.json
