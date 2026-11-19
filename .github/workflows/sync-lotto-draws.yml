@@ -1,0 +1,48 @@
+name: Sync lotto draws
+
+on:
+  schedule:
+    - cron: '10,40 21 * * 6'
+      timezone: Asia/Seoul
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: lotto-draw-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: npm --prefix functions ci --no-audit --no-fund
+
+      - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          project_id: ${{ vars.LOTTO_FIRESTORE_PROJECT }}
+          workload_identity_provider: ${{ vars.LOTTO_WIF_PROVIDER }}
+          service_account: ${{ vars.LOTTO_SYNC_SERVICE_ACCOUNT }}
+
+      - name: Sync draw results
+        env:
+          LOTTO_FIRESTORE_PROJECT: ${{ vars.LOTTO_FIRESTORE_PROJECT }}
+        run: |
+          args=(--project "$LOTTO_FIRESTORE_PROJECT")
+          if [[ "$GITHUB_EVENT_NAME" == 'schedule' ]]; then
+            args+=(--scheduled)
+          fi
+          npm --prefix functions run sync -- "${args[@]}"
