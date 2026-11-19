@@ -7,7 +7,7 @@
 
 Firestore의 `draws/{회차}` 문서에 `round`, `drawDate` (`YYYY-MM-DD`), `numbers` (본번호 6개), `bonusNumber`, `sourceUrl`, `importedAt`을 저장합니다. 초기 적재와 주간 갱신은 동행복권의 JSON 조회를 사용합니다. [동행복권 회차별 당첨번호](https://www.dhlottery.co.kr/lt645/winNumber)
 
-GitHub Actions의 **Sync lotto draws**가 매주 토요일 21:10 KST에 새 회차를 저장합니다. 21:40 KST에 다시 실행하며, 그 주 결과가 이미 있으면 종료합니다. Actions 탭의 **Run workflow**로 최신 발표 결과를 수동으로 확인할 수도 있습니다. 공개 저장소에 60일간 활동이 없으면 GitHub가 예약 실행을 비활성화할 수 있습니다. [GitHub Actions 예약 실행](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule)
+GitHub Actions의 **Sync lotto draws**가 매주 토요일 21:10 KST에 새 회차를 확인합니다. 결과가 아직 저장되지 않았으면 21:40과 23:00 KST에 다시 시도합니다. Actions 탭의 **Run workflow**로 최신 발표 결과를 수동으로 확인할 수도 있습니다. 공개 저장소에 60일간 활동이 없으면 GitHub가 예약 실행을 비활성화할 수 있습니다. [GitHub Actions 예약 실행](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule)
 
 워크플로는 Workload Identity Federation으로 인증합니다. 저장소의 Actions 변수에 `LOTTO_FIRESTORE_PROJECT`, `LOTTO_WIF_PROVIDER`, `LOTTO_SYNC_SERVICE_ACCOUNT`를 지정합니다. 서비스 계정에는 Firestore의 조회, 트랜잭션 시작·종료, 새 문서 생성 권한이 필요합니다. 인증 제공자는 이 저장소의 기본 브랜치에서 실행되는 `sync-lotto-draws.yml`에 연결합니다. [Google Cloud GitHub 인증 설정](https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines)
 
